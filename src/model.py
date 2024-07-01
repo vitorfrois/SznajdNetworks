@@ -6,12 +6,12 @@ NODE_INFO = 'node_info'
 
 class DiscreteNetworkModel:
     running: bool
-    steps: int
+    _steps: int
     graph: nx.Graph
 
     def __init__(self, seed = None) -> None:
         self.running = False
-        self.steps = 0
+        self._steps = 0
         if seed:
             self.random = random.Random(seed)
         else:
@@ -19,6 +19,9 @@ class DiscreteNetworkModel:
 
     def set_graph(self, graph: nx.Graph) -> None:
         self.graph = graph
+
+    def get_graph(self) -> nx.Graph:
+        return self.graph
 
     def step(self) -> None:
         pass
@@ -62,5 +65,14 @@ class DiscreteNetworkModel:
         for key in d:
             d[key] = len(d[key])
         return d
+
+    def draw_network(self) -> None:
+        graph = self.graph
+        pos = nx.spring_layout(graph, seed=0)
+        nx.draw(
+            graph,
+            ax=space_ax,
+            pos=pos
+        )
 
         

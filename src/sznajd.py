@@ -3,11 +3,10 @@ from enum import Enum
 import networkx as nx
 from model import DiscreteNetworkModel
 from tqdm import tqdm
+from matplotlib.figure import Figure
 
-
-class Opinion(Enum):
-    NEGATIVE = -1
-    POSITIVE = 1
+NEGATIVE = -1
+POSITIVE = 1
 
 class Sznajd(DiscreteNetworkModel):
     def __init__(self, seed = 0):
@@ -16,11 +15,12 @@ class Sznajd(DiscreteNetworkModel):
     def random_network_initialization(self, positive_rate: float = 0.5) -> None:
         for node, _ in self.get_nodes():
             if self.random.random() < positive_rate:
-                self.set_node_data(node, Opinion.POSITIVE)
+                self.set_node_data(node, POSITIVE)
             else:
-                self.set_node_data(node, Opinion.NEGATIVE)
+                self.set_node_data(node, NEGATIVE)
 
     def step(self) -> None:
+        self._steps += 1
         i, j = self.get_random_edge()
 
         if (self.get_node_data(i) == self.get_node_data(j)):
@@ -40,4 +40,18 @@ class Sznajd(DiscreteNetworkModel):
             self.step()
         d = self.get_summarized_dict()
         print(d)
+
+    def draw_network(self, space_ax):
+        graph = self.graph
+        pos = nx.spring_layout(graph, seed=0)
+        nodes = self.get_nodes()
+        colors = [node[1] for node in list(nodes)]
+        nx.draw(
+            graph,
+            ax=space_ax,
+            pos=pos,
+            node_color=colors,
+            cmap='Set1'
+        )
+
 

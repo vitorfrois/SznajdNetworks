@@ -2,3 +2,5 @@ networkx
 matplotlib
 numpy
 pandas
+tqdm
+solara
