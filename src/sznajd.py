@@ -4,6 +4,7 @@ import networkx as nx
 from model import DiscreteNetworkModel
 from tqdm import tqdm
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 NEGATIVE = -1
 POSITIVE = 1
@@ -44,14 +45,25 @@ class Sznajd(DiscreteNetworkModel):
     def draw_network(self, space_ax):
         graph = self.graph
         pos = nx.spring_layout(graph, seed=0)
-        nodes = self.get_nodes()
-        colors = [node[1] for node in list(nodes)]
-        nx.draw(
+        colors = [node[1] for node in list(self.get_nodes())]
+
+        nodes = nx.draw_networkx_nodes(
             graph,
             ax=space_ax,
             pos=pos,
+            node_size=100,
             node_color=colors,
-            cmap='Set1'
+            cmap='bwr'
         )
+
+        nx.draw_networkx_edges(
+            graph,
+            ax=space_ax,
+            pos=pos,
+            width=0.05,
+        )
+        # plt.colorbar(nodes, ax=space_ax)
+
+
 
 
