@@ -7,7 +7,7 @@ from tqdm import tqdm
 import os
 
 n_nodes = 1000
-n_networks = 10
+n_networks = 1
 BASE_NETWORK_DIR = 'data/nets/'
 
 @dataclass

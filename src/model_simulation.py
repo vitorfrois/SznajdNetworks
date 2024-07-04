@@ -3,6 +3,7 @@ from sznajd import Sznajd
 import os
 from tqdm import tqdm
 import numpy as np
+import pandas as pd
 
 MONTE_CARLO_ITERATIONS = 1
 BASE_NETWORK_DIR = 'data/nets/'
@@ -21,13 +22,13 @@ def simulate_sznajd(BASE_NETWORK_DIR: str, BASE_SIMULATION_DIR: str):
             continue
 
         for network_file in os.listdir(network_folder):
-            print(monte_carlo_simulation(f'{network_folder}/{network_file}'))
-            # measure_dict = network_measure.get_measure_dict()
-            # simulations_dict_df[network_file] = measure_dict
-        # simulations_dict_df = pd.DataFrame(simulations_dict_df).T
-        # simulations_dict_df.to_csv(simulations_filename)
+            simulation_dict = monte_carlo_simulation(f'{network_folder}/{network_file}')
+            simulations_dict_df[network_file] = pd.DataFrame(simulation_dict)
+        simulations_dict_df = pd.DataFrame(simulations_dict_df, index=[0]).T # TODO: fix dict of dicts to dataframe
 
-def monte_carlo_simulation(network_path: str) -> dict[str, dict[str, float]]:
+        simulations_dict_df.to_csv(simulations_filename)
+
+def monte_carlo_simulation(network_path: str) -> dict[str, float]:
     result_dict = {}
     model = Sznajd()
     initialization_dict = {
@@ -37,17 +38,19 @@ def monte_carlo_simulation(network_path: str) -> dict[str, dict[str, float]]:
     }
     model.set_graph(nx.read_edgelist(network_path))
     for initialization in initialization_dict:
-        initialization_dict[initialization]()
         consensus_time_list = []
         opinion_change_frequency_list = []
         for i in tqdm(range(MONTE_CARLO_ITERATIONS), leave=False):
+            model.reset_model()
+            initialization_dict[initialization](0.8)
             consensus_time, opinion_change_frequency = model.run_model()
             consensus_time_list.append(consensus_time)
             opinion_change_frequency_list.append(opinion_change_frequency)
         result_dict[initialization] = {
-            'consensus_time': np.mean(consensus_time_list),
-            'opinion_change_frequency': np.mean(opinion_change_frequency_list)
+            'consensus_time': float(np.mean(consensus_time_list)),
+            'opinion_change_frequency': float(np.mean(opinion_change_frequency_list))
         }
+    print(pd.DataFrame(result_dict))
     return result_dict
 
 

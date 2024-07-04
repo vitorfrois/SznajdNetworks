@@ -12,17 +12,17 @@ POSITIVE = 1
 OPINIONS = [NEGATIVE, POSITIVE]
 
 class Sznajd(DiscreteNetworkModel):
-    consensus_time: int
     opinion_change_frequency: int
+    time_series: list[dict[int, int]]
 
     def __init__(self, seed = None):
         super().__init__(seed)
 
     def reset_model(self) -> None:
-        self.consensus_time = 0
         self.opinion_change_frequency = 0
         self._steps = 0
         self.random = random.Random()
+        self.time_series = []
 
     def get_ordered_opinion_list(self, positive_rate: float = 0.5) -> list[int]:
         opinion_list = []
@@ -41,17 +41,18 @@ class Sznajd(DiscreteNetworkModel):
             else:
                 self.set_node_data(node, NEGATIVE)
 
-    def direct_initialization(self):
+    def direct_initialization(self, positive_rate: float = 0.5):
         " High degree nodes receive positive opinions "
-        for node, opinion in zip(self.get_nodes_sorted_by_degree(), self.get_ordered_opinion_list()):
+        for node, opinion in zip(self.get_nodes_sorted_by_degree(), self.get_ordered_opinion_list(positive_rate)):
             self.set_node_data(node[0], opinion)
 
-    def inverse_initialization(self):
+    def inverse_initialization(self, positive_rate: float = 0.5):
         " Low degree nodes receive positive opinions "
-        for node, opinion in zip(reversed(self.get_nodes_sorted_by_degree()), self.get_ordered_opinion_list()):
+        for node, opinion in zip(reversed(self.get_nodes_sorted_by_degree()), self.get_ordered_opinion_list(positive_rate)):
             self.set_node_data(node[0], opinion)
 
     def step(self) -> None:
+        self.time_series.append(self.get_summarized_dict())
         self._steps += 1
         i, j = self.get_random_edge()
 
@@ -71,12 +72,10 @@ class Sznajd(DiscreteNetworkModel):
     def check_consensus(self):
         return len(self.get_summarized_dict()) == 1
     
-    def run_model(self, max_steps: int = 1e4, verbose: bool = False) -> tuple[int, int]:
+    def run_model(self, max_steps: int = 1e3, verbose: bool = False) -> tuple[int, int]:
         while not self.check_consensus() and self._steps < max_steps:
             self.step()
-            self.consensus_time += 1
-        print(self.consensus_time, self.opinion_change_frequency)
-        return self.consensus_time, self.opinion_change_frequency
+        return self._steps, self.opinion_change_frequency
 
     def draw_network(self, space_ax):
         graph = self.graph
