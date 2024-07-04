@@ -5,20 +5,51 @@ from model import DiscreteNetworkModel
 from tqdm import tqdm
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+import random
 
 NEGATIVE = -1
 POSITIVE = 1
+OPINIONS = [NEGATIVE, POSITIVE]
 
 class Sznajd(DiscreteNetworkModel):
-    def __init__(self, seed = 0):
+    consensus_time: int
+    opinion_change_frequency: int
+
+    def __init__(self, seed = None):
         super().__init__(seed)
 
+    def reset_model(self) -> None:
+        self.consensus_time = 0
+        self.opinion_change_frequency = 0
+        self._steps = 0
+        self.random = random.Random()
+
+    def get_ordered_opinion_list(self, positive_rate: float = 0.5) -> list[int]:
+        opinion_list = []
+        n_nodes = len(self.graph)
+        for i in range(int((1 - positive_rate) * n_nodes)):
+            opinion_list.append(NEGATIVE)
+        for i in range(int(positive_rate * n_nodes)):
+            opinion_list.append(POSITIVE)
+        return opinion_list
+
     def random_network_initialization(self, positive_rate: float = 0.5) -> None:
+        " Nodes receive opinion randomically "
         for node, _ in self.get_nodes():
             if self.random.random() < positive_rate:
                 self.set_node_data(node, POSITIVE)
             else:
                 self.set_node_data(node, NEGATIVE)
+
+    def direct_initialization(self):
+        " High degree nodes receive positive opinions "
+        for node, opinion in zip(self.get_nodes_sorted_by_degree(), self.get_ordered_opinion_list()):
+            self.set_node_data(node[0], opinion)
+
+    def inverse_initialization(self):
+        " Low degree nodes receive positive opinions "
+        for node, opinion in zip(reversed(self.get_nodes_sorted_by_degree()), self.get_ordered_opinion_list()):
+            self.set_node_data(node[0], opinion)
 
     def step(self) -> None:
         self._steps += 1
@@ -35,12 +66,17 @@ class Sznajd(DiscreteNetworkModel):
         for neighbor in neighbors:
             if self.random.random() < probability:
                 self.set_node_data(neighbor, opinion)
+                self.opinion_change_frequency += 1
+
+    def check_consensus(self):
+        return len(self.get_summarized_dict()) == 1
     
-    def run_model(self, verbose: bool = False) -> None:
-        for i in tqdm(range(1000)):
+    def run_model(self, max_steps: int = 1e4, verbose: bool = False) -> tuple[int, int]:
+        while not self.check_consensus() and self._steps < max_steps:
             self.step()
-        d = self.get_summarized_dict()
-        print(d)
+            self.consensus_time += 1
+        print(self.consensus_time, self.opinion_change_frequency)
+        return self.consensus_time, self.opinion_change_frequency
 
     def draw_network(self, space_ax):
         graph = self.graph

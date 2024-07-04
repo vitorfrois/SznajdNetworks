@@ -148,16 +148,15 @@ network_list: list[NetworkSpec] = [
 #     nx.write_edgelist(G, fh1)
 
 def generate_networks(network_list: list[NetworkSpec], BASE_NETWORK_DIR: str, n_networks: int):
-    for spec in network_list:
+    for spec in tqdm(network_list):
         network_dir = f'{BASE_NETWORK_DIR}{spec.name}'
         if not os.path.exists(network_dir):
-            print(f'Generating {spec.name}')
             os.makedirs(network_dir)
-            for i in tqdm(range(n_networks)):
+            for i in tqdm(range(n_networks), leave=False):
                 graph = spec.function(**spec.kwargs)
                 if not isinstance(graph, nx.Graph):
                     graph = graph.to_networkx()
-                file = open(f'{network_dir}/{spec.name}_{str(i)}.adj', 'wb')
+                file = open(f'{network_dir}/{spec.name}_{str(i)}.edgelist', 'wb')
                 nx.write_edgelist(graph, file, data=False)
 
 if __name__ == '__main__':

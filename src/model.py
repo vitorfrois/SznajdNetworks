@@ -12,6 +12,7 @@ class DiscreteNetworkModel:
     def __init__(self, seed = None) -> None:
         self.running = False
         self._steps = 0
+        self.nodes_sorted_by_degree = None
         if seed:
             self.random = random.Random(seed)
         else:
@@ -32,6 +33,13 @@ class DiscreteNetworkModel:
 
     def get_nodes(self) -> list:
         return self.graph.nodes(data=NODE_INFO)
+
+    def get_nodes_sorted_by_degree(self) -> list:
+        if self.nodes_sorted_by_degree:
+            return self.nodes_sorted_by_degree
+        nodes = self.graph.degree()
+        self.nodes_sorted_by_degree = sorted(nodes, key=lambda a: a[1])
+        return self.nodes_sorted_by_degree
 
     def get_random_node(self) -> int | tuple:
         return self.random.choice(self.get_nodes())
