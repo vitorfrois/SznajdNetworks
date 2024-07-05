@@ -57,8 +57,8 @@ class Sznajd(DiscreteNetworkModel):
         i, j = self.get_random_edge()
 
         if (self.get_node_data(i) == self.get_node_data(j)):
-            self.convince_neighbors(i)
-            self.convince_neighbors(j)
+            self.convince_all_neighbors(i)
+            self.convince_all_neighbors(j)
             
     def convince_neighbors(self, node) -> None:
         neighbors = self.get_node_neighbors(node)
@@ -68,6 +68,15 @@ class Sznajd(DiscreteNetworkModel):
             if self.random.random() < probability:
                 self.set_node_data(neighbor, opinion)
                 self.opinion_change_frequency += 1
+
+    def convince_all_neighbors(self, node) -> None:
+        neighbors = self.get_node_neighbors(node)
+        opinion = self.get_node_data(node)
+        for neighbor in neighbors:
+            if self.get_node_data(neighbor) == opinion:
+                continue
+            self.opinion_change_frequency += 1
+            self.set_node_data(neighbor, opinion)
 
     def check_consensus(self):
         return len(self.get_summarized_dict()) == 1

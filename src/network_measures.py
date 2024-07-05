@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from tqdm import tqdm
 import os
 
-n_networks = 10
 BASE_NETWORK_DIR = 'data/nets/'
 BASE_MEASURE_DIR = 'data/measures/'
 
@@ -59,7 +58,6 @@ class NetworkMeasure:
 
 
 def compute_network_measures(BASE_NETWORK_DIR: str, BASE_MEASURE_DIR: str):
-    print(os.listdir(BASE_NETWORK_DIR))
     if not os.path.exists(BASE_MEASURE_DIR):
         os.makedirs(BASE_MEASURE_DIR)
     for networks_folder in tqdm(os.listdir(BASE_NETWORK_DIR)):
