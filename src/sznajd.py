@@ -106,7 +106,7 @@ class Sznajd(DiscreteNetworkModel):
             pos=pos,
             width=0.05,
         )
-        # plt.colorbar(nodes, ax=space_ax)
+        plt.colorbar(nodes, ax=space_ax)
 
 
 

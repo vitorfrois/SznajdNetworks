@@ -79,7 +79,6 @@ class DiscreteNetworkModel:
         pos = nx.spring_layout(graph, seed=0)
         nx.draw(
             graph,
-            ax=space_ax,
             pos=pos
         )
 
