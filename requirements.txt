@@ -5,3 +5,6 @@ pandas
 tqdm
 solara
 scipy
+igraph
+scipy
+ipykernel

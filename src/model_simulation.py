@@ -23,9 +23,8 @@ def simulate_sznajd(BASE_NETWORK_DIR: str, BASE_SIMULATION_DIR: str):
 
         for network_file in os.listdir(network_folder):
             simulation_dict = monte_carlo_simulation(f'{network_folder}/{network_file}')
-            simulations_dict_df[network_file] = pd.DataFrame(simulation_dict)
-        simulations_dict_df = pd.DataFrame(simulations_dict_df, index=[0]).T # TODO: fix dict of dicts to dataframe
-
+            simulations_dict_df[network_file] = simulation_dict
+        simulations_dict_df = pd.DataFrame(simulations_dict_df).T
         simulations_dict_df.to_csv(simulations_filename)
 
 def monte_carlo_simulation(network_path: str) -> dict[str, float]:
@@ -46,11 +45,8 @@ def monte_carlo_simulation(network_path: str) -> dict[str, float]:
             consensus_time, opinion_change_frequency = model.run_model()
             consensus_time_list.append(consensus_time)
             opinion_change_frequency_list.append(opinion_change_frequency)
-        result_dict[initialization] = {
-            'consensus_time': float(np.mean(consensus_time_list)),
-            'opinion_change_frequency': float(np.mean(opinion_change_frequency_list))
-        }
-    print(pd.DataFrame(result_dict))
+        result_dict[(initialization, 'consensus_time')] = float(np.mean(consensus_time_list))
+        result_dict[(initialization, 'opinion_change_frequency')] = float(np.mean(opinion_change_frequency_list))
     return result_dict
 
 
