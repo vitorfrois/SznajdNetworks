@@ -7,4 +7,5 @@ solara
 scipy
 igraph
 scipy
+scikit-learn
 ipykernel
