@@ -22,9 +22,9 @@ def Page():
     
     def make_model():
         model = Sznajd()
-        model.set_graph(nx.erdos_renyi_graph(100, 0.2))
+        model.set_graph(nx.barabasi_albert_graph(100, 40))
         model.reset_model()
-        model.random_network_initialization(0.8)
+        model.direct_initialization(0.2)
         current_step.value = 0
         return model
 

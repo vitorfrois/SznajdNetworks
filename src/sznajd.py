@@ -52,13 +52,14 @@ class Sznajd(DiscreteNetworkModel):
             self.set_node_data(node[0], opinion)
 
     def step(self) -> None:
-        self.time_series.append(self.get_summarized_dict())
-        self._steps += 1
-        i, j = self.get_random_edge()
+        for i in range(3):
+            self.time_series.append(self.get_summarized_dict())
+            self._steps += 1
+            i, j = self.get_random_edge()
 
-        if (self.get_node_data(i) == self.get_node_data(j)):
-            self.convince_all_neighbors(i)
-            self.convince_all_neighbors(j)
+            if (self.get_node_data(i) == self.get_node_data(j)):
+                self.convince_all_neighbors(i)
+                self.convince_all_neighbors(j)
             
     def convince_neighbors(self, node) -> None:
         neighbors = self.get_node_neighbors(node)

@@ -19,7 +19,6 @@ def ModelController(model, current_step, reset_counter, play_interval: int = 150
 
     def render():
         """Infinite loop regularly mutating counter state"""
-        print('here', playing.value)
         while playing.value:
             sleep(0.5)
             do_step()
