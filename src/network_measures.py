@@ -56,6 +56,29 @@ class NetworkMeasure:
     def approximate_current_flow_betweenness_centrality(self, kwargs: dict | None = None) -> float:
         return np.mean(list(nx.approximate_current_flow_betweenness_centrality(self.nxgraph, **kwargs).values()))
 
+    def shannon_entropy(self, kwargs: dict | None = None) -> float:
+        k, Pk = degree_distribution(G)
+        H = 0
+        for p in Pk:
+            if (p > 0):
+                H -= p * math.log(p, 2)
+        return H
+
+    @staticmethod
+    def degree_distribution(G):
+        degree_list = np.array(list(dict(G.degree()).values))
+        max_degree = np.max(degree_histogram)
+        degree_values = np.arange(0, max_degree + 1)
+        degree_probability = np.zeros(max_degree + 1)
+
+        for k in degree_list:
+            degree_probability[k] += 1
+
+        degree_probability = degree_probability/sum(degree_probability)
+        return degree_values, degree_probability
+
+    
+
 
 def compute_network_measures(BASE_NETWORK_DIR: str, BASE_MEASURE_DIR: str):
     if not os.path.exists(BASE_MEASURE_DIR):

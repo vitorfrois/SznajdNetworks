@@ -4,6 +4,7 @@ import os
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
+from numba import njit
 
 MONTE_CARLO_ITERATIONS = 100
 BASE_NETWORK_DIR = 'data/nets/'
