@@ -49,7 +49,6 @@ class OptimizedSznajd:
 
     def random_network_initialization(self, positive_rate: float = 0.5) -> None:
         " Nodes receive opinion randomically "
-        nodes = self.get_nodes()
         for i in range(self.N):
             if np.random.random() < positive_rate:
                 self.opinion_array[i] = POSITIVE
