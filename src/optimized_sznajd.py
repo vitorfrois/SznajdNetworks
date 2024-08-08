@@ -15,7 +15,8 @@ spec = [
     ('running', boolean),
     ('graph', int32[:, :]),
     ('N', int32),
-    ('opinion_array', int32[:])
+    ('opinion_array', int32[:]),
+    ('smallest_degree_index', int32[:])
 ]
 
 random.seed(0)
@@ -39,13 +40,23 @@ class OptimizedSznajd:
         self.graph = adjacency_matrix
         self.N = len(adjacency_matrix)
         self.opinion_array = np.zeros(self.N, dtype=np.int32)
-    
-    def get_nodes(self):
-        return self.opinion_array
 
     def reset_model(self) -> None:
         self.opinion_change_frequency = 0
         self._steps = 0
+
+    def network_initialization(self, positive_rate: float = 0.5, method: str = 'random') -> None:
+        """
+            Assign opinion to nodes. 
+            
+            method: str = {random, direct, inverse}
+        """
+        if method == 'random':
+            self.random_network_initialization(positive_rate)
+        elif method == 'direct':
+            self.direct_initialization(positive_rate)
+        elif method == 'inverse':
+            self.inverse_initialization(positive_rate)
 
     def random_network_initialization(self, positive_rate: float = 0.5) -> None:
         " Nodes receive opinion randomically "
@@ -55,13 +66,32 @@ class OptimizedSznajd:
             else:
                 self.opinion_array[i] = NEGATIVE
 
+    def direct_initialization(self, positive_rate: float = 0.5):
+        " High degree nodes receive positive opinions "
+        nodes_degrees = np.sum(self.graph, axis=1, dtype=np.int32)
+        smallest_degree_index = np.argsort(nodes_degrees)[:int(self.N * (1 - positive_rate))].astype(np.int32)
+    
+        self.opinion_array = np.full(self.N, POSITIVE)
+        for i in range(len(smallest_degree_index)):
+            self.opinion_array[smallest_degree_index[i]] = NEGATIVE
+
+    def inverse_initialization(self, positive_rate: float = 0.5):
+        " Low degree nodes receive positive opinions "
+        nodes_degrees = np.sum(self.graph, axis=1, dtype=np.int32)
+        smallest_degree_index = np.argsort(nodes_degrees)[:int(self.N * (positive_rate))].astype(np.int32)
+
+        self.opinion_array = np.full(self.N, NEGATIVE)
+        for i in range(len(smallest_degree_index)):
+            self.opinion_array[smallest_degree_index[i]] = POSITIVE
+
     def get_node_neighbors(self, node):
         return np.nonzero(self.graph[node])[0]
 
     def step(self) -> None:
         self._steps += 1
         i = np.random.randint(0, self.N)
-        j = np.random.randint(0, self.N)
+        i_neighbors = self.get_node_neighbors(i)
+        j = np.random.choice(i_neighbors)
 
         if (self.opinion_array[i] == self.opinion_array[j]) and i != j:
             self.convince_all_neighbors(i)
