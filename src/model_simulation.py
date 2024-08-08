@@ -5,7 +5,8 @@ import os
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
-from numba import njit
+from numba import njit, prange, deferred_type
+import copy
 
 MONTE_CARLO_ITERATIONS = 100
 BASE_NETWORK_DIR = 'data/nets/'
@@ -33,7 +34,11 @@ def simulate_sznajd(BASE_NETWORK_DIR: str, BASE_SIMULATION_DIR: str):
 def model_simulation(adjacency_matrix: np.array) -> dict[str, float]:
     result_dict = {}
     model = OptimizedSznajd()
-    initialization_methods = ['random', 'direct', 'inverse']
+    initialization_methods = [
+        # 'random', 
+        # 'direct', 
+        'inverse'
+    ]
     model.set_graph(adjacency_matrix)
     for i in range(len(initialization_methods)):
         initialization = initialization_methods[i]
@@ -43,7 +48,7 @@ def model_simulation(adjacency_matrix: np.array) -> dict[str, float]:
     return result_dict
 
 @njit
-def optimized_monte_carlo(model, initialization,iterations: int = MONTE_CARLO_ITERATIONS):
+def optimized_monte_carlo(model, initialization, iterations: int = MONTE_CARLO_ITERATIONS):
     consensus_time_list = np.zeros(iterations, dtype=np.int32)
     opinion_change_frequency_list = np.zeros(iterations, dtype=np.int32)
     for i in range(iterations):

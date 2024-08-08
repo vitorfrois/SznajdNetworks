@@ -57,6 +57,9 @@ class OptimizedSznajd:
             self.direct_initialization(positive_rate)
         elif method == 'inverse':
             self.inverse_initialization(positive_rate)
+        else:
+            raise Exception('Non existent method. Choose random, direct or inverse')
+
 
     def random_network_initialization(self, positive_rate: float = 0.5) -> None:
         " Nodes receive opinion randomically "
@@ -69,20 +72,20 @@ class OptimizedSznajd:
     def direct_initialization(self, positive_rate: float = 0.5):
         " High degree nodes receive positive opinions "
         nodes_degrees = np.sum(self.graph, axis=1, dtype=np.int32)
-        smallest_degree_index = np.argsort(nodes_degrees)[:int(self.N * (1 - positive_rate))].astype(np.int32)
-    
-        self.opinion_array = np.full(self.N, POSITIVE)
-        for i in range(len(smallest_degree_index)):
-            self.opinion_array[smallest_degree_index[i]] = NEGATIVE
+        highest_degree_node_index = np.argsort(nodes_degrees)[:-int(self.N * positive_rate)].astype(np.int32)
+        self.opinion_array = np.full(self.N, NEGATIVE, dtype=np.int32)
+
+        for i in range(len(highest_degree_node_index)):
+            self.opinion_array[highest_degree_node_index[i]] = POSITIVE
 
     def inverse_initialization(self, positive_rate: float = 0.5):
         " Low degree nodes receive positive opinions "
         nodes_degrees = np.sum(self.graph, axis=1, dtype=np.int32)
-        smallest_degree_index = np.argsort(nodes_degrees)[:int(self.N * (positive_rate))].astype(np.int32)
+        smallest_degree_node_index = np.argsort(nodes_degrees)[:int(self.N * (positive_rate))].astype(np.int32)
+        self.opinion_array = np.full(self.N, NEGATIVE, dtype=np.int32)
 
-        self.opinion_array = np.full(self.N, NEGATIVE)
-        for i in range(len(smallest_degree_index)):
-            self.opinion_array[smallest_degree_index[i]] = POSITIVE
+        for i in range(len(smallest_degree_node_index)):
+            self.opinion_array[smallest_degree_node_index[i]] = POSITIVE
 
     def get_node_neighbors(self, node):
         return np.nonzero(self.graph[node])[0]
