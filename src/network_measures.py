@@ -5,6 +5,7 @@ import igraph as ig
 from dataclasses import dataclass
 from tqdm import tqdm
 import os
+import math
 
 BASE_NETWORK_DIR = 'data/nets/'
 BASE_MEASURE_DIR = 'data/measures/'
@@ -14,6 +15,8 @@ class NetworkMeasure:
     igraph: ig.GraphBase
     nxgraph: nx.Graph
     measure_dict: dict[str, float]
+    degree_values: np.array
+    degree_probability: np.array
 
     def __init__(self, network_file: str):
         self.igraph = ig.Graph.Read_Edgelist(network_file, directed=False)
@@ -21,14 +24,16 @@ class NetworkMeasure:
 
     def get_measure_dict(self) -> dict[str, float]:
         measure_dict = {
-            'clustering': self.clustering({'mode': 'zero'}),
-            'closeness': self.closeness({}),
-            'betweenness': self.betweenness({}),
-            'average_shortest_path_lenght': self.average_shortest_path_lenght({}),
-            'eigenvector': self.eigenvector({}),
-            'assortativity': self.assortativity({'directed': False}),
-            'information_centrality': self.information_centrality({}),
-            'approximate_current_flow_betweenness_centrality': self.approximate_current_flow_betweenness_centrality({}),
+            # 'clustering': self.clustering({'mode': 'zero'}),
+            # 'closeness': self.closeness({}),
+            # 'betweenness': self.betweenness({}),
+            # 'average_shortest_path_lenght': self.average_shortest_path_lenght({}),
+            # 'eigenvector': self.eigenvector({}),
+            # 'assortativity': self.assortativity({'directed': False}),
+            # 'information_centrality': self.information_centrality({}),
+            # 'approximate_current_flow_betweenness_centrality': self.approximate_current_flow_betweenness_centrality({}),
+            'shannon_entropy': self.shannon_entropy({}),
+            'degree_variance': self.degree_variance({})
         }
         return measure_dict
 
@@ -57,17 +62,21 @@ class NetworkMeasure:
         return np.mean(list(nx.approximate_current_flow_betweenness_centrality(self.nxgraph, **kwargs).values()))
 
     def shannon_entropy(self, kwargs: dict | None = None) -> float:
-        k, Pk = degree_distribution(G)
+        k, Pk = self.degree_distribution()
         H = 0
         for p in Pk:
             if (p > 0):
                 H -= p * math.log(p, 2)
         return H
 
-    @staticmethod
-    def degree_distribution(G):
-        degree_list = np.array(list(dict(G.degree()).values))
-        max_degree = np.max(degree_histogram)
+    def degree_variance(self, kwargs: dict | None = None) -> float:
+        k, Pk = self.degree_distribution()
+        return np.std(k)
+
+    def degree_distribution(self):
+
+        degree_list = np.array(list(dict(self.nxgraph.degree()).values()))
+        max_degree = np.max(degree_list)
         degree_values = np.arange(0, max_degree + 1)
         degree_probability = np.zeros(max_degree + 1)
 
