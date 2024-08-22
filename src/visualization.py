@@ -2,7 +2,6 @@ import networkx as nx
 import solara
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
-from model import DiscreteNetworkModel
 from sznajd import Sznajd
 import reacton.ipywidgets as widgets
 from time import sleep
@@ -22,9 +21,9 @@ def Page():
     
     def make_model():
         model = Sznajd()
-        model.set_graph(nx.barabasi_albert_graph(100, 40))
+        model.set_graph(nx.erdos_renyi_graph(100, 0.3))
         model.reset_model()
-        model.direct_initialization(0.2)
+        model.direct_initialization(0.5)
         current_step.value = 0
         return model
 

@@ -7,8 +7,8 @@ from tqdm import tqdm
 import os
 import math
 
-BASE_NETWORK_DIR = 'data/nets/'
-BASE_MEASURE_DIR = 'data/measures/'
+BASE_NETWORK_DIR = '../data/nets/'
+BASE_MEASURE_DIR = '../data/measures/'
 
 
 class NetworkMeasure:

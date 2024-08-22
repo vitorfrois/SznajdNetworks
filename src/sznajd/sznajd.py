@@ -1,7 +1,7 @@
 # Sznajd Model
 from enum import Enum
 import networkx as nx
-from model import DiscreteNetworkModel
+from sznajd.model import DiscreteNetworkModel
 from tqdm import tqdm
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt

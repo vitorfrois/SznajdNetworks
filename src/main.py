@@ -1,6 +1,6 @@
 import networkx as nx
 from sznajd import Sznajd
-from optimized_sznajd import OptimizedSznajd
+from sznajd.optimized_sznajd import OptimizedSznajd
 import numpy as np
 from numba import njit
 from tqdm import tqdm

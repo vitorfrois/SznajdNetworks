@@ -2,8 +2,8 @@ import networkx as nx
 import solara
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
-from model import DiscreteNetworkModel
-from sznajd import Sznajd
+from sznajd.model import DiscreteNetworkModel
+from sznajd.sznajd import Sznajd
 import reacton.ipywidgets as widgets
 from time import sleep
 import matplotlib.pyplot as plt

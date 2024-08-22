@@ -1,6 +1,6 @@
 import networkx as nx
-from sznajd import Sznajd
-from optimized_sznajd import OptimizedSznajd
+from sznajd.sznajd import Sznajd
+from sznajd.optimized_sznajd import OptimizedSznajd
 import os
 from tqdm import tqdm
 import numpy as np
@@ -9,8 +9,9 @@ from numba import njit, prange, deferred_type
 import copy
 
 MONTE_CARLO_ITERATIONS = 100
-BASE_NETWORK_DIR = 'data/nets/'
-BASE_SIMULATION_DIR = 'data/simulations/'
+
+BASE_NETWORK_DIR = '../data/nets/'
+BASE_SIMULATION_DIR = '../data/simulations/'
 
 def simulate_sznajd(BASE_NETWORK_DIR: str, BASE_SIMULATION_DIR: str):
     print(os.listdir(BASE_NETWORK_DIR))

@@ -8,7 +8,7 @@ import os
 
 n_nodes = 1000
 n_networks = 100
-BASE_NETWORK_DIR = 'data/nets/'
+BASE_NETWORK_DIR = '../data/nets/'
 
 @dataclass
 class NetworkSpec:
