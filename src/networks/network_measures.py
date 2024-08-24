@@ -7,8 +7,8 @@ from tqdm import tqdm
 import os
 import math
 
-BASE_NETWORK_DIR = '../data/nets/'
-BASE_MEASURE_DIR = '../data/measures/'
+BASE_NETWORK_DIR = 'data/nets/'
+BASE_MEASURE_DIR = 'data/measures/'
 
 
 class NetworkMeasure:
@@ -24,16 +24,17 @@ class NetworkMeasure:
 
     def get_measure_dict(self) -> dict[str, float]:
         measure_dict = {
-            # 'clustering': self.clustering({'mode': 'zero'}),
-            # 'closeness': self.closeness({}),
+            'clustering': self.clustering({'mode': 'zero'}),
+            'closeness': self.closeness({}),
+            'n': self.size({})
             # 'betweenness': self.betweenness({}),
             # 'average_shortest_path_lenght': self.average_shortest_path_lenght({}),
             # 'eigenvector': self.eigenvector({}),
             # 'assortativity': self.assortativity({'directed': False}),
             # 'information_centrality': self.information_centrality({}),
             # 'approximate_current_flow_betweenness_centrality': self.approximate_current_flow_betweenness_centrality({}),
-            'shannon_entropy': self.shannon_entropy({}),
-            'degree_variance': self.degree_variance({})
+            # 'shannon_entropy': self.shannon_entropy({}),
+            # 'degree_variance': self.degree_variance({})
         }
         return measure_dict
 
@@ -85,6 +86,9 @@ class NetworkMeasure:
 
         degree_probability = degree_probability/sum(degree_probability)
         return degree_values, degree_probability
+
+    def size(self, kwargs: dict | None = None):
+        return len(self.nxgraph)
 
     
 

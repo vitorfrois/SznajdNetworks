@@ -1,6 +1,6 @@
 import networkx as nx
-from sznajd.sznajd import Sznajd
-from sznajd.optimized_sznajd import OptimizedSznajd
+# from sznajd.sznajd import Sznajd
+from optimized_sznajd import OptimizedSznajd
 import os
 from tqdm import tqdm
 import numpy as np
@@ -10,8 +10,8 @@ import copy
 
 MONTE_CARLO_ITERATIONS = 100
 
-BASE_NETWORK_DIR = '../data/nets/'
-BASE_SIMULATION_DIR = '../data/simulations/'
+BASE_NETWORK_DIR = 'data/nets/'
+BASE_SIMULATION_DIR = 'data/simulations/'
 
 def simulate_sznajd(BASE_NETWORK_DIR: str, BASE_SIMULATION_DIR: str):
     print(os.listdir(BASE_NETWORK_DIR))
@@ -27,7 +27,9 @@ def simulate_sznajd(BASE_NETWORK_DIR: str, BASE_SIMULATION_DIR: str):
 
         for network_file in tqdm(os.listdir(network_folder), desc=f'Monte Carlo on {networks_folder} networks', leave=False):
             # simulation_dict = monte_carlo_simulation(f'{network_folder}/{network_file}')
-            simulation_dict = model_simulation(nx.to_numpy_array(nx.read_edgelist(f'{network_folder}/{network_file}'), dtype=np.int32))
+            adjacency_matrix = nx.to_numpy_array(nx.read_edgelist(f'{network_folder}/{network_file}'), dtype=np.int32)
+            if len(adjacency_matrix) > 0:
+                simulation_dict = model_simulation(adjacency_matrix)
             simulations_dict_df[network_file] = simulation_dict
         simulations_dict_df = pd.DataFrame(simulations_dict_df).T
         simulations_dict_df.to_csv(simulations_filename)
@@ -36,9 +38,9 @@ def model_simulation(adjacency_matrix: np.array) -> dict[str, float]:
     result_dict = {}
     model = OptimizedSznajd()
     initialization_methods = [
-        # 'random', 
+        'random', 
         # 'direct', 
-        'inverse'
+        # 'inverse'
     ]
     model.set_graph(adjacency_matrix)
     for i in range(len(initialization_methods)):

@@ -39,6 +39,8 @@ class OptimizedSznajd:
     def set_graph(self, adjacency_matrix: np.array):
         self.graph = adjacency_matrix
         self.N = len(adjacency_matrix)
+        if self.N == 0:
+            raise ValueError('This was not supposed to happen. Adjacency matrix lenght = 0')
         self.opinion_array = np.zeros(self.N, dtype=np.int32)
 
     def reset_model(self) -> None:
@@ -94,8 +96,11 @@ class OptimizedSznajd:
         self._steps += 1
         i = np.random.randint(0, self.N)
         i_neighbors = self.get_node_neighbors(i)
-        j = np.random.choice(i_neighbors)
 
+        if len(i_neighbors) == 0:
+            return 
+
+        j = np.random.choice(i_neighbors)
         if (self.opinion_array[i] == self.opinion_array[j]) and i != j:
             self.convince_all_neighbors(i)
             self.convince_all_neighbors(j)
