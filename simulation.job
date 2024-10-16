@@ -1,0 +1,11 @@
+#PBS -N SznajdModelSimulation
+#PBS -l select=1:ncpus=4
+#PBS -l walltime=20:00:00
+#PBS -m abe
+#PBS -M frois@usp.br
+
+module load libffi/3.4.2 python/3.10.1-2
+cd SznajdNetworks/
+source venv/bin/activate
+python src/model_simulation.py
+
