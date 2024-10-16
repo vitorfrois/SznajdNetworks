@@ -9,7 +9,7 @@ import random
 
 n_nodes = 1000
 n_networks = 200
-BASE_NETWORK_DIR = 'data/nets/'
+BASE_NETWORK_DIR = 'src/data/nets/'
 
 @dataclass
 class NetworkSpec:
@@ -20,8 +20,8 @@ class NetworkSpec:
 network_list: list[NetworkSpec] = [
     NetworkSpec(
         'erdos_renyi',
-        nx.erdos_renyi_graph,
-        kwargs={'n': n_nodes, 'p': 0.01}
+        ig.Graph.Erdos_Renyi,
+        kwargs=None
     )
 ]
 
@@ -31,15 +31,15 @@ def generate_networks(network_list: list[NetworkSpec], BASE_NETWORK_DIR: str, n_
         if not os.path.exists(network_dir):
             os.makedirs(network_dir)
             for i in tqdm(range(n_networks), leave=False):
+                p = random.random()
                 kwargs={
-                    'n': random.randint(1000, 1500), 
-                    'p': random.random()
+                    'n': int(random.choice([1e2, 1e3, 1e4])), 
+                    'p': p,
+                    'directed': False
                 }
                 graph = spec.function(**kwargs)
-                if not isinstance(graph, nx.Graph):
-                    graph = graph.to_networkx()
-                file = open(f'{network_dir}/{spec.name}_{str(i)}.edgelist', 'wb')
-                nx.write_edgelist(graph, file, data=False)
+                with open(f'{network_dir}/{spec.name}_{str(i)}_p{p:.4f}.edgelist', 'wb') as file:
+                    graph.write(file, format="edgelist")
 
 if __name__ == '__main__':
     generate_networks(network_list, BASE_NETWORK_DIR, n_networks)
