@@ -4,12 +4,26 @@ import pandas as pd
 import igraph as ig
 from dataclasses import dataclass
 from tqdm import tqdm
+from itertools import combinations
 import os
 import random
+from numba import njit
 
 n_nodes = 1000
 n_networks = 200
 BASE_NETWORK_DIR = 'src/data/nets/'
+
+def generate_random_graph(n: list, p: float) -> list[tuple[int, int]]:
+    edge_list = []
+    node_list = list(range(n))
+    all_edges = list(combinations(node_list, 2))
+    random.shuffle(all_edges)
+    edge_list = all_edges[:int(p * len(all_edges))]
+    return edge_list
+
+def write_edge_list_file(edge_list: list, filename: str):
+    with open(filename, 'w+') as file:
+        file.write('\n'.join('%s %s' % x for x in edge_list))
 
 @dataclass
 class NetworkSpec:
@@ -24,6 +38,7 @@ network_list: list[NetworkSpec] = [
         kwargs=None
     )
 ]
+
 
 def generate_networks(network_list: list[NetworkSpec], BASE_NETWORK_DIR: str, n_networks: int):
     for spec in tqdm(network_list):
