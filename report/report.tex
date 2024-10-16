@@ -1,0 +1,65 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Predição de Variáveis Dinâmicas no Modelo de Sznajd em Redes Complexas}
+\author{Vítor Amorim Fróis}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+    O presente projeto utiliza Aprendizado de Máquina para prever variáveis complexas no modelo de Sznajd em Redes Complexas: o Tempo de Consenso e a Frequência de Troca de Opinião. Ao utilizar medidas topológicas para caracterização de redes e consequentemente como features, podemos prever as variáveis com alta acurácia.
+    Ao explorar a convergência entre estrutura e dinâmica de redes, esse projeto responde dúvidas relacionadas aos mecanismos de polarização em interações sociais.
+\end{abstract}
+
+\section{Introduction}
+A interação entre componentes de um sistema que possuem regras simples leva a formação de padrões complexos e características como emergência, livre de escala e heterogeneidade. Fenômenos emergentes são presentes em sistemas complexos e caracterizados pelo resultado espontâneo da interação entre os milhares de componentes que constituem o sistema. Um grande exemplo de emergência ocorre durante a noite do sudeste asiático, quando vagalumes da região piscam de acordo ajustam a frequência do piscar de suas luzes de acordo com os vizinhos mais próximos, até que o efeito seja extendido por todo o sistema, de forma que os indivíduos pisquem em sincronia \cite{johnson2002emergence}.
+
+No contexto de dinâmicas sociais, isto é, modelos matemáticos que buscam reproduzir o comportamento humano em redes, a emergência pode ser caracterizada como um fenômeno relacionado a polarização \cite{maia2021emergence}. Aqui e no restante do relatório, definimos polarização como a fragmentação de opiniões, um estado contrário ao consenso. Diversos estudos mostram que a polarização pode ter profunda influência no âmbito político \cite{interian2023polarization,layton2021polarization}. Dessa forma, o estudo das causas da polarização é de suma importância para mitigar os impactos causados pelo seu desenvolvimento.
+
+A física estatística desenvolveu ferramentas para o estudo de sistemas de muitas partículas interagentes, os quais são adaptados com facilidade para o estudo de dinâmicas sociais. Ersnt Ising encontrou a solução exata para um modelo de paramagneto, representando materiais que podem alcançar dois estados conflitantes e buscam um estado de mínima energia. O modelo recebeu o nome de Ising e pode ser considerado como um modelo para simples opiniões, onde há uma transição de fase entre os estados de polarização e consenso. O modelo de Sznajd foi inspirado pelo primeiro modelo e busca explorar como opiniões semelhantes são necessárias para influenciar outros. Já o modelo votante ilustra como a maioria pode influenciar vizinhos, explorando por sua vez como a ordem emerge a partir da opinião maioria.
+
+\begin{itemize}
+    \item Sistemas complexos
+    \item Polarização e motivação política
+    \item ising $\rightarrow$ sznajd, voter e q-voter
+    \item topologia pode influenciar na formação de consenso, além disso seria ótimo estudar sistemas complexos com ferramentas como ML
+    \item alguns resultados com o modelo de sznajd
+    \item vamos comparar diferentes abordagens e dinâmicas
+\end{itemize}
+
+\section{Materiais e Métodos}
+\subsection{Geração de Redes Aleatórias}
+
+\subsection{Simulação de Monte Carlo do modelo de Sznajd}
+\subsection{Medidas}
+\subsection{Machine Learning}
+selecao empirica de features, selecao via forward selection, r2 score, regressao nao linear
+\section{Resultados}
+Falar brevemente sobre a alta acurácia em cada um dos casos (random, direto e inverso)
+\subsection{tabela com os resultados}
+\subsection{medidas mais importantes}
+\section{Conclusão}
+\begin{itemize}
+    \item{pq as medidas mais importantes sao importantes}
+    \item{quais as diferencas entre as inicializacoes diferentes}
+    \item{regressao poisson vs xgboost e redes neurais}
+    \item{Comparacao q-voter}
+\end{itemize}
+
+\bibliographystyle{alpha}
+\bibliography{sample}
+
+\end{document}
