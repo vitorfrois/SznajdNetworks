@@ -23,11 +23,25 @@ A física estatística desenvolveu ferramentas para o estudo de sistemas de muit
 
 # Materiais e Métodos
 ## Geração de Redes Aleatórias
-Seis diferentes topologias das redes foram examinadas. As redes Erdös–Rényi, Barabási–Albert linear, Barabási–Albert não linear com $\alpha=0.5$ and $\alpha=1.5$, Watts–Strogatz e Waxman ~\cite{boccaletti2006complex,costa2007characterization}. Essas topologias buscam abordar diferentes estruturas que sociedades reais possam admitir, considerando a presença de hubs, comunidades e *small*world}. Ou seja, como as redes geradas por esses modelos apresentam diferentes propriedades que podems ser controladas através de seus parâmetros, poderemos gerar um banco de dados com exemplos de topologias diferentes. Assim, os efeitos de propriedades topológicas no processo dinâmico podem ser verificados, visto que muitas propriedades, como distância entre os vértices ou nível de centralidade, sofrerão variações nas bases geradas. Essa variação é importante para oferecermos exemplos diferentes aos modelos de aprendizado que usaremos na fase de predição das variáveis dinâmicas. Para cada uma dessas redes, 100 instâncias foram criadas visando diminuir efeitos da aleatoriedade na construção do modelo.
+Seis diferentes topologias das redes foram examinadas. As redes Erdös–Rényi, Barabási–Albert linear, Barabási–Albert não linear com $\alpha=0.5$ and $\alpha=1.5$, Watts–Strogatz e Waxman ~\cite{boccaletti2006complex,costa2007characterization}. Essas topologias buscam abordar diferentes estruturas que sociedades reais possam admitir, considerando a presença de hubs, comunidades e *small-world*. Ou seja, como as redes geradas por esses modelos apresentam diferentes propriedades que podems ser controladas através de seus parâmetros, poderemos gerar um banco de dados com exemplos de topologias diferentes. Assim, os efeitos de propriedades topológicas no processo dinâmico podem ser verificados, visto que muitas propriedades, como distância entre os vértices ou nível de centralidade, sofrerão variações nas bases geradas. Essa variação é importante para oferecermos exemplos diferentes aos modelos de aprendizado que usaremos na fase de predição das variáveis dinâmicas. Para cada uma dessas redes, 100 instâncias foram criadas visando diminuir efeitos da aleatoriedade na construção do modelo.
 
-O modelo de Erdos-Renyi (ER) é um dos mais estudados e detalhados na teoria dos grafos, formando redes ao ligar $N$ nós entre as possíveis arestas com probabilidade $p$. Apesar de não representar com fidelidade cenários do mundo real, possui apelo matemático por possuir características bem definidas. A rede Watts-Strogatz por sua vez, busca garantir que o diâmetro da rede é baixo, conhecido como característica de pequeno mundo, além de um alto agrupamento. As redes Barabási-Álbert, por sua vez, enfatizam a lei de potência na distribuição de probabilidade dos nós através da construção via ligação preferencial. Por fim, a rede de Waxman é construída ao colocar pontos de forma aleatória em um espaço e ligá-los de acordo com sua distância e é conhecida por trazer princípios geográficos, incluindo o aparecimento de comunidades, para os grafos.
+### Erdos-Renyi (ER)
+O modelo de Erdos-Renyi (ER) é um dos mais estudados e detalhados na teoria dos grafos. É formado ao ligar $N$ nós entre as possíveis arestas com probabilidade $p$. Apesar de não representar com fidelidade cenários do mundo real, possui apelo matemático por possuir características bem definidas. 
 
-## Simulação de Monte Carlo domodelo de Sznajd
+### Small-World de Watts e Strogatz
+Diversas redes do mundo real exibem a propriedade *small-world*, isto é, a maioria dos vértices podem ser alcançados pelo restante a partir de um pequeno número de arestas. Essa propriedade é muito comum em redes sociais.
+
+Outra propriedade muito relevante em redes é a presença de *loops* de tamanho três: se $i$ está conectado a $j$ e $k$, há uma grande probabilidade que $j$ e $k$ estejam conectados por sua vez. As redes ER possuem característica de pequeno mundo, porém não apresentam muitos triângulos. De forma contrária, é fácil construir redes com abundância de loops, mas é difícil garantir a presença de características de pequeno mundo. 
+
+O modelo mais popular que uniu as duas características foi desenvolvido por Watts e Strogatz e recebeu o nome de modelo *small-world* de Watts-Strogatz (WS). Para construí-lo, comece com uma grade triangular e realize a reconexão de cada aresta presente com probabilidade $p$. Para $p\approx 0$, a rede original é mantida, enquanto que para $p\approx 1$ há uma rede aleatória.
+
+### Redes Livre de Escala de Barabási e Albert
+Barabási e Albert demonstraram que a distribuição do grau de inúmeros sistemas do mundo real é caracterizada por uma distribuição assimétrica. Nessas redes, alguns vértices são altamente conectados enquanto outros possuem poucas conexões. Uma característica muito importnate dessa rede é a existência de *hubs*, vértices que são conectados a uma fração significativa do total da rede. A construção das redes Barabási-Albert inicia com um conjunto de vértices e iterativamente adiciona arestas de forma que os vértices mais conectados possuam maior chance de formar novas arestas. 
+
+### Redes Geográficas
+Por fim, a rede de Waxman é construída ao colocar pontos de forma aleatória em um espaço e ligá-los de acordo com sua distância e é conhecida por trazer princípios geográficos, incluindo o aparecimento de comunidades, para os grafos.
+
+## Simulação de Monte Carlo do modelo de Sznajd
 O modelo de *spin* de Ising é um dos modelos mais utilizados na mecânica estatística~\cite{castellano2009social}. No artigo \cite{sznajd2000opinion} é proposto o modelo de Sznajd, uma adaptação de Ising para descrever dinâmicas de opinião em uma comunidade.
 
 O modelo original segue uma simulação estocástica implementando o fenômeno de validação social nos agentes $S_i, i=1,2,...,N$ com opiniões $O=\{-1, +1\}$. A cada passo, dois vizinhos são selecionados e o sistema é atualizado de acordo com as seguintes regras dinâmicas:
@@ -38,7 +52,7 @@ O modelo original segue uma simulação estocástica implementando o fenômeno d
 O modelo original foi proposto para um sistema unidimensional. 
 % No entanto, a dinâmica foi modificada de forma incluir uma rede complexa~\cite{sanchez2004sznajd}. 
 % Nesse trabalho será utilizada a adaptação apresentada em \cite{Bernardes_2002} para implementação do modelo de Sznajd em redes com duas opiniões. 
-Considere uma rede de $N$ pessoas, com opiniões $O =\{-1, +1\}$ inicialmente distribuidas de forma aleatória. Cada indivíduo é uma variável dinâmica binária $s(x, t)=O$ de grau $k_x$, em que $x=1,...,N$.  Uma iteração $t$ de uma sequência de iterações até o consenso é descrita abaixo: 
+Considere uma rede de $N$ pessoas, com opiniões $O =\{-1, +1\}$ inicialmente distribuidas de forma aleatória. Cada indivíduo é uma variável dinâmica binária $s(x, t)=O$ de grau $k_x$, em que $x=1,...,N$.  Uma iteração $t$ de uma sequência de iterações até o consenso é descrita abaixo:
 
 - Uma dupla de nós vizinhos $i$ e $j$ é escolhida aleatoriamente
 - Se $s(i, t) \ne s(j, t)$ a iteração termina
@@ -59,9 +73,17 @@ Além disso, adotamos três abordagens distintas de inicialização para os nós
 ## Caracterização de Redes
 Buscamos caracterizar cada rede $i$ utilizando um vetor de features derivado de sua estrutura e denotado por $X_i=\{X_{i1}, X_{i2}, ...,X_{ik}\}$, em que $X_{ik}$ é a k-ésima métrica da rede $i$. Assim, foram utilizadas diversas medidas, incluindo o coeficiente de *clustering*, *closeness centrality*, *betweenness centrality*, *average shortest path lenght*, coeficiente de correlação de Pearson do grau, *information centrality*, *approximate current flow betweenness centrality* e *eigenvector centrality*, Entropia de Shannon e segundo momento do grau. Tais medidas, usadas coletivamente aqui, fornecem *insights* valiosos sobre a topologia, conectividade, eficiência, influência e organização em redes complexas \cite{costa2007characterization}. 
 
-![Heatmap utilizando correlação de Spearman entre as features. É possível observar alta colinearidade entre diversas medidas.](heatmap.png)
+![*Heatmap* utilizando correlação de Spearman entre as features. É possível observar alta colinearidade entre diversas medidas.](heatmap.png)
 
-Podemos dividir as métricas descritas acima entre três grandes grupos, sendo eles medidas de centralidade (*closeness centrality*, *betweenness centrality*, *average shortest path lenght*, *information centrality*, *approximate current flow betweenness centrality* e *eigenvector centrality*), de transitividade (*clustering*) e de conectividade (coeficiente de correlação de Pearson do grau, Entropia de Shannon e segundo momento do grau). Podemos obter um heatmap entre as features obtidas para as redes geradas utilizando a correlação de Spearman, uma medida que quantifica a colinearidade entre duas variáveis. Ao analisar o heatmap, vemos que há grande correlação linear entre diversas feautres, principalmente aquelas que pertencem aos mesmos grupos. Esse resultado é importante pois quando há informação mútua entre variáveis, o grau de influência no resultado de modelos de Aprendizado de Máquina é diminuido. 
+Podemos dividir as métricas descritas acima entre três grandes grupos, sendo eles medidas de centralidade (*closeness centrality*, *betweenness centrality*, *average shortest path lenght*, *information centrality*, *approximate current flow betweenness centrality* e *eigenvector centrality*), de transitividade (*clustering*) e de conectividade (Assortatividade, Entropia de Shannon e segundo momento do grau). Podemos obter um *heatmap* entre as features obtidas para as redes geradas utilizando a correlação de Spearman, uma medida que quantifica a colinearidade entre duas variáveis. Ao analisar o *heatmap*, vemos que há grande correlação linear entre diversas feautres, principalmente aquelas que pertencem aos mesmos grupos. Esse resultado é importante pois quando há informação mútua entre variáveis, o grau de influência no resultado de modelos de Aprendizado de Máquina é diminuido. 
+
+A seguir, realizamos uma revisão das métricas de rede mais importantes para compreensão desse trabalho.
+
+### *Closeness Centrality*
+### *Clustering Coefficient*
+### Entropy de Shannon
+### Assortatividade
+
 
 ## Aprendizado de Máquina
 Nesse projeto assumimos que o tempo para alcançar consenso $Y_i$ e a frequência de mudança de opinião $C_i$ podem ser inferidos a partir do vetor de *features* $X_i$. A explicação abaixo foca na predição de $Y_i$ mas também é válida para $C_i$. 
@@ -75,24 +97,51 @@ Nosso objetivo é encontrar a função $f$ que relaciona $Y_i$ às métricas da 
 ### *Forward Selection* (FS)
 *Forward Stepwise Selection* é uma maneira eficiente para selecionar *features*, que começa com um modelo sem preditores e adiciona variáveis uma a uma, até que os preditores exigidos estejam no modelo. De modo particular, em cada passo é adicionado o melhor preditor ao modelo. Considerando a alta colinearidade entre as variáveis explicativas, o FS desempenha um papel muito eficiente ao selecionar a melhor variável em cada passo sem descartar suas correlações.
 
-pseudocodigo fs
+```
+1. Considere o modelo nulo M0, sem variáveis preditoras.
+
+2. Para k = 0,..., p - 1:
+   a) Considere todos p-k modelos que adicionem uma variável ao modelo anterior Mk
+   b) Escolha Mk+1 como o melhor entre os p-k modelos 
+
+3. Escolha o melhor entre todos modelos M0,...,Mp do passo 2 utilizando uma métrica como R2
+
+```
 
 ### Coeficiente de Determinação (R2)
-O coeficiente de determinação, $R2$, é uma métrica usada para medir o quão bem um modelo de regressão se ajusta aos dados \cite{johnson2017r2}. No entanto, quando adicionamos mais preditores ao modelo, o R2 pode aumentar mesmo que esses novos preditores não ajudem realmente a explicar a variação na variável dependente \cite{bishop2006pattern, murphy2012machine}. Para lidar com isso, utilizaremos o R2 ajustado, que leva em consideração o número de preditores e penaliza a inclusão daqueles que são irrelevantes. Esse ajuste fornece uma avaliação mais precisa de quão bem o modelo prevê o resultado. Isso garante uma avaliação mais confiável do desempenho do modelo.
+O coeficiente de determinação, $R^2$, é uma métrica usada para medir o quão bem um modelo de regressão se ajusta aos dados \cite{johnson2017r2}.
 
-formula r2
+$$
+R^2=1-\dfrac{\sum_i (y_i - \hat{y}_i)^2}{\sum_i (y_i - \bar{y})^2}
+$$
 
-### Validação Cruzada
-A fim de analisar os resultados utilizaremos o R2 no modelo de aprendizado de máquina, juntamente com técnicas descritas acima, como a validação cruzada e etapa de teste em um conjunto oculto de dados. Essa etapa busca garantir que o modelo foi capaz de generalizar com base nos dados de treinamento e consegue realizar boas previsões em dados novos.
+A fórmula é mostrada acima. Para cada amostra $i$, $y_i$ é o valor real, $\hat{y}_i$ é o valor predito e $\bar{y}$ é a média dos valores reais. Um valor de 1 significa que o modelo realiza predições perfeitas. De forma contrária, um valor igual ou menor a 0 indica que o modelo não possui habilidade de predição.
 
-fotinha validaçao cruzada
+No entanto, quando adicionamos mais preditores ao modelo, o $R^2$ pode aumentar mesmo que esses novos preditores não ajudem realmente a explicar a variação na variável dependente \cite{bishop2006pattern, murphy2012machine}. Para lidar com isso, utilizaremos o $R^2$ ajustado, que leva em consideração o número de preditores $p$ e penaliza a inclusão daqueles que são irrelevantes. Esse ajuste fornece uma avaliação mais precisa de quão bem o modelo prevê o resultado. Isso garante uma avaliação mais confiável do desempenho do modelo. Na fórmula abaixo, $n$ indica o número de amostras no conjunto.
 
+$$
+R^2_\text{adj} = 1 - \dfrac{(1 - R^2) (n - 1)}{(n - p - 1)}
+$$
 
-## Machine Learning
-selecao empirica de features, selecao via forward selection, r2 score, regressao nao linear
+### Validação Cruzada 
+A fim de analisar os resultados utilizaremos o $R^2$ no modelo de aprendizado de máquina, juntamente com técnicas descritas acima, como a validação cruzada e etapa de teste em um conjunto oculto de dados. Essa etapa busca garantir que o modelo foi capaz de generalizar com base nos dados de treinamento e consegue realizar boas previsões em dados novos.
+
+A validação cruzada divide o conjunto de treinamento em *$k$-folds* de tamanho semelhante. O primeiro *fold* é tratado como conjunto de validação, e o modelo é treinado nos *$k$-1 folds* restantes. A métrica de avaliação é então computada com as observações de validação e o valor é armazenado. Ao final das $k$ iterações, o valor da métrica é a média de cada iteração.
+
+### Regressão Logarítmica
+No problema abordado, ambas variáveis resposta assumem apenas valores não negativos. Dessa forma, podemos utilizar regressão não-linear ou logarítmica para alcançar resultados mais realistas. Para tanto, buscamos estimar os coeficientes $\beta_1,...,\beta_p$ tal que 
+$$
+\log(Y_i) = X_i\beta+\delta 
+$$
+também pode ser escrito como
+$$
+Y_i = e^{X_i\beta+\delta} 
+$$
+
+A imagem da função exponencial é $[0,\infty)$, garantindo que o valor estimado $Y_i$ sempre será positivo.
 
 # Resultados
-Falar brevemente sobre a alta acurácia em cada um dos casos (random, direto e inverso)
+## Análise Exploratória de Dados
 
 ## tabela com os resultados
 
