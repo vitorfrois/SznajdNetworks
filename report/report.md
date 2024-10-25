@@ -75,7 +75,7 @@ Buscamos caracterizar cada rede $i$ utilizando um vetor de features derivado de 
 
 ![*Heatmap* utilizando correlação de Spearman entre as features. É possível observar alta colinearidade entre diversas medidas.](heatmap.png)
 
-Podemos dividir as métricas descritas acima entre três grandes grupos, sendo eles medidas de centralidade (*closeness centrality*, *betweenness centrality*, *average shortest path lenght*, *information centrality*, *approximate current flow betweenness centrality* e *eigenvector centrality*), de transitividade (*clustering*) e de conectividade (Assortatividade, Entropia de Shannon e segundo momento do grau). Podemos obter um *heatmap* entre as features obtidas para as redes geradas utilizando a correlação de Spearman, uma medida que quantifica a colinearidade entre duas variáveis. Ao analisar o *heatmap*, vemos que há grande correlação linear entre diversas feautres, principalmente aquelas que pertencem aos mesmos grupos. Esse resultado é importante pois quando há informação mútua entre variáveis, o grau de influência no resultado de modelos de Aprendizado de Máquina é diminuido. 
+Podemos dividir as métricas descritas acima entre três grandes grupos, sendo eles medidas de centralidade (*closeness centrality*, *betweenness centrality*, *average shortest path lenght*, *information centrality*, *approximate current flow betweenness centrality* e *eigenvector centrality*), de transitividade (*clustering*) e de conectividade (Assortatividade, Entropia de Shannon e segundo momento do grau). Podemos obter um *heatmap* entre as features obtidas para as redes geradas utilizando a correlação de Spearman, uma medida que quantifica a colinearidade entre duas variáveis. Ao analisar o *heatmap*, vemos que há grande correlação linear entre diversas feautres, principalmente aquelas que pertencem aos mesmos grupos. Esse resultado é importante pois quando há informação mútua entre variáveis, o grau de influência no resultado de modelos de Aprendizado de Máquina é diluído. 
 
 A seguir, realizamos uma revisão das métricas de rede mais importantes para compreensão desse trabalho.
 
@@ -96,7 +96,7 @@ $$
 
 O fator 3 leva em conta que cada triangulo pode ser parte de três triplas diferentes, cada uma com um vértice sendo o principal e garante que $C \in [0, 1]$.
 
-### Entropy de Shannon
+### Entropia de Shannon
 Entropia é um conceito chave em termodinâmica, mecânica estatística e teoria da informação e está relacionada fisicamente com a quantidade de disordem e informação presentes em um sistema. Na teoria ade informação, entropia descreve quanta aleatoriedade está presente em um evento aleatório. Esse conceito pode ser aplicao para o estudo de redes complexas ao calcular a entropia da distribuição do grau. Essa medida provê uma média de heterogeneidade da rede e pode ser definida como
 
 $$
@@ -168,11 +168,55 @@ $$
 A imagem da função exponencial é $[0,\infty)$, garantindo que o valor estimado $Y_i$ sempre será positivo.
 
 # Resultados
-## Análise Exploratória de Dados
+## Predição de Variáveis Dinâmicas
+Para os resultados abaixo, considere um modelo de regressão logarítmica com todas as *features*, que seleciona $n=2$ *features* utilizando FS em um ambiente de Validação Cruzada. 
+Inicialmente almejamos alcançar um alto coeficiente de determinação nas previsões. A seguir, vemos que o objetivo é alcançado para ambas variáveis.
 
-## tabela com os resultados
+### Frequência de Troca de Opinião
+|         |   r2_train |   r2_test | selected_features                                                 |
+|:--------|-----------:|----------:|:------------------------------------------------------------------|
+| random  |   0.990428 |  0.990366 | ['clustering', 'approximate_current_flow_betweenness_centrality'] |
+| direct  |   0.997254 |  0.995369 | ['clustering', 'eigenvector']                                     |
+| inverse |   0.994792 |  0.994392 | ['clustering', 'information_centrality']                          |
 
-## medidas mais importantes
+### Tempo de Consenso
+|         |   r2_train |   r2_test | selected_features                       |
+|:--------|-----------:|----------:|:----------------------------------------|
+| random  |   0.994099 |  0.990117 | ['closeness', 'information_centrality'] |
+| direct  |   0.99064  |  0.989489 | ['closeness', 'shannon_entropy']        |
+| inverse |   0.992382 |  0.991563 | ['closeness', 'betweenness']            |
+
+## Análise de Regressão
+Com os resultados de alta predição em mãos, é possível se aprofundar nos resultados para maior interpretabilidade das variáveis resposta através dos coeficientes de regressão, p-valores e outras informações. Aqui, realizamos uma seleção empírica das variáveis das seção 2.3 prezando pela diversidade e explicabilidade. Assim, os próximos resultados advém do mesmo cenário da subseção anterior considerando apenas as variáveis descritas na seçao 2.3: Entropia de Shannon, Assortatividade, *Closeness Centrality* e Coeficiente de *Clustering*.
+
+### Frequência de Troca de Opinião
+
+### Tempo de Consenso
+
+#### Inicialização Aleatória
+|           | coef    | std err | $t$      | $P>|t|$ | $[0.025$ | $0.975]$ |
+|:-----------|:--------|:--------|:---------|:------|:-------|:-------|
+|const      | 6.6265  | 0.006   | 1061.073 | 0.000 | 6.614  | 6.639  |
+|clustering | 0.3165  | 0.012   | 25.377   | 0.000 | 0.292  | 0.341  |
+|closeness  | -1.2648 | 0.012   | -101.425 | 0.000 | -1.289 | -1.240 |
+
+#### Inicialização Direta
+|           | coef    | std err | $t$      | $P>|t|$ | $[0.025$ | $0.975]$ |
+|:----------------|:--------|:--------|:---------|:------|:-------|:-------|
+| const           | 6.7928  | 0.010   | 687.142  | 0.000 | 6.773  | 6.812  |
+| closeness       | -2.2713 | 0.013   | -175.561 | 0.000 | -2.297 | -2.246 |
+| shannon_entropy | 0.1455  | 0.013   | 11.250   | 0.000 | 0.120  | 0.171  |
+
+#### Inicialização Inversa
+|           | coef    | std err | $t$      | $P>|t|$ | $[0.025$ | $0.975]$ |
+|:-----------|:--------|:--------|:---------|:------|:-------|:-------|
+| const      | 6.6062  | 0.005   | 1359.076 | 0.000 | 6.597  | 6.616  |
+| clustering | 1.2084  | 0.010   | 124.495  | 0.000 | 1.189  | 1.227  |
+| closeness  | -0.8346 | 0.010   | -85.988  | 0.000 | -0.854 | -0.816 |
+
+
+
+### 
 
 # Conclusão
 - pq as medidas mais importantes sao importantes
