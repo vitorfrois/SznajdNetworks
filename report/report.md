@@ -39,7 +39,7 @@ O modelo mais popular que uniu as duas características foi desenvolvido por Wat
 Barabási e Albert demonstraram que a distribuição do grau de inúmeros sistemas do mundo real é caracterizada por uma distribuição assimétrica. Nessas redes, alguns vértices são altamente conectados enquanto outros possuem poucas conexões. Uma característica muito importnate dessa rede é a existência de *hubs*, vértices que são conectados a uma fração significativa do total da rede. A construção das redes Barabási-Albert inicia com um conjunto de vértices e iterativamente adiciona arestas de forma que os vértices mais conectados possuam maior chance de formar novas arestas. 
 
 ### Redes Geográficas
-Por fim, a rede de Waxman é construída ao colocar pontos de forma aleatória em um espaço e ligá-los de acordo com sua distância e é conhecida por trazer princípios geográficos, incluindo o aparecimento de comunidades, para os grafos.
+A maioria das redes complexas mora em um espaço abstrato, onde a posição dos vértices não tem um sentido particular. Em algumas redes, porém, a posição dos vértices pode ter importante impacto, como por exemplo, no caso de redes de transporte rodoviário, aéreo e redes neuronais. Esses exemplos recebem o nome de redes geográficas. Uma maneira simples de gerar redes geográficas é distribuir $N$ vértices em um espaço abstrato e conectá-los com uma probabilidade que decai de acordo com a distância entre eles.
 
 ## Simulação de Monte Carlo do modelo de Sznajd
 O modelo de *spin* de Ising é um dos modelos mais utilizados na mecânica estatística~\cite{castellano2009social}. No artigo \cite{sznajd2000opinion} é proposto o modelo de Sznajd, uma adaptação de Ising para descrever dinâmicas de opinião em uma comunidade.
@@ -80,10 +80,37 @@ Podemos dividir as métricas descritas acima entre três grandes grupos, sendo e
 A seguir, realizamos uma revisão das métricas de rede mais importantes para compreensão desse trabalho.
 
 ### *Closeness Centrality*
-### *Clustering Coefficient*
-### Entropy de Shannon
-### Assortatividade
+Em redes, quanto mais próximo a outros um vértice está, maior a sua importância na rede. Assumindo que as interações entre nós seguem o caminho mais curto, a *Closeness Centrality* de um nó $u$ é definida como o recíproco da distância do caminho mais curto entre $u$ e os outros $n-1$ nós da rede $v=1,...,n$.
 
+$$
+CC(u) = \dfrac{n-1}{\sum_v d(u, v)}
+$$
+
+Onde $d(u, v)$ é a distância do caminho mais curto entre $v$ e $u$. Quanto maior o valor de *Closeness*, maior a importância do vértice na rede. Para caracterizar a rede foi utilizada o *Closeness* médio dos nós.
+
+### Coeficiente de *Clustering*
+Uma maneira simples de caracterizar a presença de *loops* de tamanho três é através do coeficiente de *Clustering*. 
+$$
+C = 3\frac{\#\text{triângulos}}{\#\text{tríades}}
+$$
+
+O fator 3 leva em conta que cada triangulo pode ser parte de três triplas diferentes, cada uma com um vértice sendo o principal e garante que $C \in [0, 1]$.
+
+### Entropy de Shannon
+Entropia é um conceito chave em termodinâmica, mecânica estatística e teoria da informação e está relacionada fisicamente com a quantidade de disordem e informação presentes em um sistema. Na teoria ade informação, entropia descreve quanta aleatoriedade está presente em um evento aleatório. Esse conceito pode ser aplicao para o estudo de redes complexas ao calcular a entropia da distribuição do grau. Essa medida provê uma média de heterogeneidade da rede e pode ser definida como
+
+$$
+H = - \sum_k P(k) \log P(k)
+$$
+
+O valor máximo de entropia é obtido para uma distribuição uniforme quando todos vértices possuem o mesmo grau e está relacionada com a robustez e resiliência da rede.  
+
+### Assortatividade
+Uma característica muito importante em redes é a presença de conexões homogeneas. Podemos nos perguntar, por exemplo, quão provável é a conexão entre nós similares. A assortatividade mede a similaridade de conexões no grafo com respeito ao grau do nó. Quando vértices de alto grau tendem a se conectar com vértices de alto grau, a rede é assortativa. Por outro lado, se os vértices de alto grau se conectam vértices de baixo grau a rede é disassortativa.
+
+\cite newman assortativity mixing
+
+O cálculo da assortatividade é feito através do Coeficiente de Correlação de Pearson $r$. Caso $r>0$, a rede é assortativa; se $r<0$, a rede é disassortativa; para $r=0$ não existe relação entre o grau dos vértices.
 
 ## Aprendizado de Máquina
 Nesse projeto assumimos que o tempo para alcançar consenso $Y_i$ e a frequência de mudança de opinião $C_i$ podem ser inferidos a partir do vetor de *features* $X_i$. A explicação abaixo foca na predição de $Y_i$ mas também é válida para $C_i$. 
