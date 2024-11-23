@@ -3,23 +3,26 @@ title: Predição de Variáveis Complexas no Modelo de Sznajd
 author:
 - Vítor Amorim Fróis
 abstract: |
-  O presente projeto utiliza Aprendizado de Máquina para prever variáveis complexas no modelo de Sznajd em Redes Complexas: o Tempo de Consenso e a Frequência de Troca de Opinião. Ao utilizar medidas topológicas para caracterização de redes e consequentemente como features, podemos prever as variáveis com alta acurácia. Ao explorar a convergência entre estrutura e dinâmica de redes, esse projeto responde dúvidas relacionadas aos mecanismos de polarização em interações sociais.
+  O presente trabalho utiliza Aprendizado de Máquina para prever variáveis complexas no modelo de Sznajd em Redes Complexas: o Tempo de Consenso e a Frequência de Troca de Opinião. Ao utilizar medidas topológicas para caracterização de redes e consequentemente como features, podemos prever as variáveis com alta acurácia. Ao explorar a convergência entre estrutura e dinâmica de redes, esse projeto responde dúvidas relacionadas aos mecanismos de polarização em interações sociais.
 ---
 
 
 # Introdução
 A interação entre componentes de um sistema que possuem regras simples leva a formação de padrões complexos e características como emergência, livre de escala e heterogeneidade. Fenômenos emergentes são presentes em sistemas complexos e caracterizados pelo resultado espontâneo da interação entre os milhares de componentes que constituem o sistema. Um grande exemplo de emergência ocorre durante a noite do sudeste asiático, quando vagalumes da região piscam de acordo ajustam a frequência do piscar de suas luzes de acordo com os vizinhos mais próximos, até que o efeito seja extendido por todo o sistema, de forma que os indivíduos pisquem em sincronia \cite{johnson2002emergence}.
 
-No contexto de dinâmicas sociais, isto é, modelos matemáticos que buscam reproduzir o comportamento humano em redes, a emergência pode ser caracterizada como um fenômeno relacionado a polarização \cite{maia2021emergence}. Aqui e no restante do relatório, definimos polarização como a fragmentação de opiniões, um estado contrário ao consenso. Diversos estudos mostram que a polarização pode ter profunda influência no âmbito político \cite{interian2023polarization,layton2021polarization}. Dessa forma, é de suma importância estudar a polarização para evitar que cenários de discórdia se repitam.
+No contexto de dinâmicas sociais, isto é, modelos matemáticos que buscam reproduzir o comportamento humano em redes, a emergência pode ser caracterizada como um fenômeno relacionado a polarização \cite{maia2021emergence}. Aqui e no restante do relatório, definimos polarização como a fragmentação de opiniões, um estado contrário ao consenso. Diversos estudos mostram que a polarização pode ter profunda influência no âmbito político, como visto nas manifestações anti-democráticas e violentas ocorridas em Brasília no dia 8 de Janeiro de 2023 \cite{interian2023polarization,layton2021polarization}. Dessa forma, é de suma importância estudar a polarização para evitar que cenários de discórdia se repitam.
 
 A física estatística desenvolveu ferramentas para o estudo de sistemas de muitas partículas interagentes, os quais são adaptados com facilidade para o estudo de dinâmicas sociais. Ersnt Ising encontrou a solução exata para um modelo de paramagneto, representando materiais que podem alcançar dois estados conflitantes e buscam um estado de mínima energia. O modelo recebeu o nome de Ising e pode ser considerado como um modelo para simples opiniões, onde há uma transição de fase entre os estados de polarização e consenso. O modelo de Sznajd foi inspirado pelo primeiro modelo e busca explorar como opiniões semelhantes são necessárias para influenciar outros. Já o modelo votante ilustra como a maioria pode influenciar vizinhos, explorando por sua vez como a ordem emerge a partir da opinião maioria.
 
-- Sistemas complexos
-- Polarização e motivação política
-- ising $\rightarrow$ sznajd, voter e q-voter
+Para uma compreensão mais realista do fenômeno do consenso, é crucial simular esses modelos em diferentes topologias de rede, uma vez que ela desempenha um papel fundamental na dinâmica do consenso e na polarização resultante. Estudos recentes destacam a influência significativa da topologia da rede nos resultados de consenso e polarização \cite{pineda2023machine}. Dada a significativa influência da topologia da rede na formação de consenso, surge a necessidade de explorar a viabilidade de um modelo de Aprendizado de Máquina para prever variáveis dinâmicas de sistemas com base nas propriedades de rede subjacente. Essa abordagem, amplamente aplicada em campos como sincronização e disseminação de epidemias \cite{rodrigues2019machine}, levanta a questão sobre sua aplicabilidade no estudo do modelo de Sznajd. Este trabalho investiga essa possibilidade, focalizando na capacidade do aprendizado de máquina de antecipar variáveis dinâmicas do modelo de Sznajd, com base na topologia da rede. Destaca-se assim, o potencial dessas análises de rede para a compreensão de sistemas dinâmicos, fornecendo \textit{insights} valiosos sobre a emergência e evolução da polarização na sociedade.
+
+Esse trabalho apresenta valiosos *insights* na relação entre topologia de rede e dinâmicas sociais, destacando o potencial do uso de métricas de rede para análise de sistemas dinâmicos. Visto a alta colinearidade nas métricas de caracterização \ref{figure:2} e comportamento das variáveis resposta, uma metodologia baseada em *Forward Selection* e Regressão não Linear foi proposta, garantindo alta acurácia, robustez e maior explicabilidade em relação a *Random Forests*.
+
+<!-- 
 - topologia pode influenciar na formação de consenso, além disso seria ótimo estudar sistemas complexos com ferramentas como ML
 - alguns resultados com o modelo de sznajd
-- vamos comparar diferentes abordagens e dinâmicas
+- vamos comparar diferentes abordagens e dinâmicas 
+-->
 
 # Materiais e Métodos
 ## Geração de Redes Aleatórias
@@ -34,6 +37,8 @@ Diversas redes do mundo real exibem a propriedade *small-world*, isto é, a maio
 Outra propriedade muito relevante em redes é a presença de *loops* de tamanho três: se $i$ está conectado a $j$ e $k$, há uma grande probabilidade que $j$ e $k$ estejam conectados por sua vez. As redes ER possuem característica de pequeno mundo, porém não apresentam muitos triângulos. De forma contrária, é fácil construir redes com abundância de loops, mas é difícil garantir a presença de características de pequeno mundo. 
 
 O modelo mais popular que uniu as duas características foi desenvolvido por Watts e Strogatz e recebeu o nome de modelo *small-world* de Watts-Strogatz (WS). Para construí-lo, comece com uma grade triangular e realize a reconexão de cada aresta presente com probabilidade $p$. Para $p\approx 0$, a rede original é mantida, enquanto que para $p\approx 1$ há uma rede aleatória.
+
+![Post na plataforma X (Twitter) discorre sobre a rede de interações da Universidade de São Paulo, a qual possui características estudadas por Watts e Strogatz. Acessado em 03/11/2024 em https://x.com/LuzMadLED/status/1852872862903771258](tweet_SW.png)
 
 ### Redes Livre de Escala de Barabási e Albert
 Barabási e Albert demonstraram que a distribuição do grau de inúmeros sistemas do mundo real é caracterizada por uma distribuição assimétrica. Nessas redes, alguns vértices são altamente conectados enquanto outros possuem poucas conexões. Uma característica muito importnate dessa rede é a existência de *hubs*, vértices que são conectados a uma fração significativa do total da rede. A construção das redes Barabási-Albert inicia com um conjunto de vértices e iterativamente adiciona arestas de forma que os vértices mais conectados possuam maior chance de formar novas arestas. 
@@ -113,27 +118,13 @@ Uma característica muito importante em redes é a presença de conexões homoge
 O cálculo da assortatividade é feito através do Coeficiente de Correlação de Pearson $r$. Caso $r>0$, a rede é assortativa; se $r<0$, a rede é disassortativa; para $r=0$ não existe relação entre o grau dos vértices.
 
 ## Aprendizado de Máquina
-Nesse projeto assumimos que o tempo para alcançar consenso $Y_i$ e a frequência de mudança de opinião $C_i$ podem ser inferidos a partir do vetor de *features* $X_i$. A explicação abaixo foca na predição de $Y_i$ mas também é válida para $C_i$. 
+Nesse trabalho assumimos que o tempo para alcançar consenso $Y_i$ e a frequência de mudança de opinião $C_i$ podem ser inferidos a partir do vetor de *features* $X_i$. A explicação abaixo foca na predição de $Y_i$ mas também é válida para $C_i$. 
 
 $$
 Y_i = f(X_i)+\delta
 $$
 
 Nosso objetivo é encontrar a função $f$ que relaciona $Y_i$ às métricas da rede. Trataremos predição de $Y_i$ como um problema de regressão em que $\delta$ é um termo que representa uma distribuição normal com média zero e desvio padrão $\sigma$. Esse termo representa a incerteza nos dados, que incluem as medidas que não foram incluídas no modelo e as flutuações aleatórias na simulação das redes e modelos.
-
-### *Forward Selection* (FS)
-*Forward Stepwise Selection* é uma maneira eficiente para selecionar *features*, que começa com um modelo sem preditores e adiciona variáveis uma a uma, até que os preditores exigidos estejam no modelo. De modo particular, em cada passo é adicionado o melhor preditor ao modelo. Considerando a alta colinearidade entre as variáveis explicativas, o FS desempenha um papel muito eficiente ao selecionar a melhor variável em cada passo sem descartar suas correlações.
-
-```
-1. Considere o modelo nulo M0, sem variáveis preditoras.
-
-2. Para k = 0,..., p - 1:
-   a) Considere todos p-k modelos que adicionem uma variável ao modelo anterior Mk
-   b) Escolha Mk+1 como o melhor entre os p-k modelos 
-
-3. Escolha o melhor entre todos modelos M0,...,Mp do passo 2 utilizando uma métrica como R2
-
-```
 
 ### Coeficiente de Determinação (R2)
 O coeficiente de determinação, $R^2$, é uma métrica usada para medir o quão bem um modelo de regressão se ajusta aos dados \cite{johnson2017r2}.
@@ -150,13 +141,29 @@ $$
 R^2_\text{adj} = 1 - \dfrac{(1 - R^2) (n - 1)}{(n - p - 1)}
 $$
 
+### *Forward Selection* (FS)
+*Forward Stepwise Selection* é uma maneira eficiente para selecionar *features*, que começa com um modelo sem preditores e adiciona variáveis uma a uma, até que os preditores exigidos estejam no modelo. De modo particular, em cada passo é adicionado o melhor preditor ao modelo. Considerando a alta colinearidade entre as variáveis explicativas, o FS desempenha um papel muito eficiente ao selecionar a melhor variável em cada passo sem descartar suas correlações.
+
+```
+1. Considere o modelo nulo M0, sem variáveis preditoras.
+
+2. Para k = 0,..., p - 1:
+   a) Considere todos p-k modelos que adicionem uma variável ao modelo anterior Mk
+   b) Escolha Mk+1 como o melhor entre os p-k modelos 
+
+3. Escolha o melhor entre todos modelos M0,...,Mp do passo 2 utilizando uma métrica como R2
+
+```
+
 ### Validação Cruzada 
 A fim de analisar os resultados utilizaremos o $R^2$ no modelo de aprendizado de máquina, juntamente com técnicas descritas acima, como a validação cruzada e etapa de teste em um conjunto oculto de dados. Essa etapa busca garantir que o modelo foi capaz de generalizar com base nos dados de treinamento e consegue realizar boas previsões em dados novos.
 
 A validação cruzada divide o conjunto de treinamento em *$k$-folds* de tamanho semelhante. O primeiro *fold* é tratado como conjunto de validação, e o modelo é treinado nos *$k$-1 folds* restantes. A métrica de avaliação é então computada com as observações de validação e o valor é armazenado. Ao final das $k$ iterações, o valor da métrica é a média de cada iteração.
 
-### Regressão Logarítmica
-No problema abordado, ambas variáveis resposta assumem apenas valores não negativos. Dessa forma, podemos utilizar regressão não-linear ou logarítmica para alcançar resultados mais realistas. Para tanto, buscamos estimar os coeficientes $\beta_1,...,\beta_p$ tal que 
+Durante a seleção de *features* via FS, a validação cruzada será utilizada. As duas *features* mais importantes são aquelas com maior frequência entre todos os $k$ folds.
+
+### Regressão não Linear
+A Regressão não Linear é apropriada em casos onde a variável resposta não é linear de acordo com as *features* e pode ser realizada através de uma transformação não-linear apropriada. No nosso caso é utilizado o logaritmo e buscamos estimar os coeficientes $\beta_1,...,\beta_p$ tal que 
 $$
 \log(Y_i) = X_i\beta+\delta 
 $$
@@ -165,9 +172,14 @@ $$
 Y_i = e^{X_i\beta+\delta} 
 $$
 
-A imagem da função exponencial é $[0,\infty)$, garantindo que o valor estimado $Y_i$ sempre será positivo.
+A imagem da função exponencial é $(0,\infty)$, garantindo que o valor estimado $Y_i$ sempre será positivo.
+
+### Random Forests
+Modelos de aprendizado de máquina robustos para dados tabulares envolvem o *ensemble* de árvores de decisão, em que a resposta final é uma média de cada uma das árvores. Dentre esses modelos, as *Random Forests* se popularizaram ao propor uma construção de árvores através de *bootstrap aggregation* ou *bagging*. Em cada passo, uma árvore é treinada a partir de um conjunto obtido a partir de amostragem com reposição do conjunto de treinamento. Após um grande número de árvores ser gerado, uma nova amostra é predita a partir das médias dos valores de todas outras árvores. 
 
 # Resultados
+
+
 ## Predição de Variáveis Dinâmicas
 Para os resultados abaixo, considere um modelo de regressão logarítmica com todas as *features*, que seleciona $n=2$ *features* utilizando FS em um ambiente de Validação Cruzada. 
 Inicialmente almejamos alcançar um alto coeficiente de determinação nas previsões. A seguir, vemos que o objetivo é alcançado para ambas variáveis.
@@ -190,29 +202,68 @@ Inicialmente almejamos alcançar um alto coeficiente de determinação nas previ
 Com os resultados de alta predição em mãos, é possível se aprofundar nos resultados para maior interpretabilidade das variáveis resposta através dos coeficientes de regressão, p-valores e outras informações. Aqui, realizamos uma seleção empírica das variáveis das seção 2.3 prezando pela diversidade e explicabilidade. Assim, os próximos resultados advém do mesmo cenário da subseção anterior considerando apenas as variáveis descritas na seçao 2.3: Entropia de Shannon, Assortatividade, *Closeness Centrality* e Coeficiente de *Clustering*.
 
 ### Frequência de Troca de Opinião
+#### Inicialização Aleatória
+
+Adj. R2: 0.988
+
+|            |   Coef |   p-valor |   Std. error |
+|:-----------|-------:|----------:|-------------:|
+| const      |  5.937 |         0 |        0.004 |
+| clustering |  0.73  |         0 |        0.009 |
+| closeness  | -0.111 |         0 |        0.009 |
+
+#### Inicialização Direta
+
+Adj. R2: 0.993
+
+|            |   Coef |   p-valor |   Std. error |
+|:-----------|-------:|----------:|-------------:|
+| const      |  6.023 |         0 |        0.006 |
+| clustering |  1.265 |         0 |        0.011 |
+| closeness  | -0.121 |         0 |        0.011 |
+
+#### Inicialização Inversa
+
+Adj. R2: 0.993
+
+|            |   Coef |   p-valor |   Std. error |
+|:-----------|-------:|----------:|-------------:|
+| const      |  6.48  |         0 |        0.004 |
+| clustering |  1.222 |         0 |        0.009 |
+| closeness  |  0.082 |         0 |        0.009 |
+
 
 ### Tempo de Consenso
 
 #### Inicialização Aleatória
-|           | coef    | std err | $t$      | $P>|t|$ | $[0.025$ | $0.975]$ |
-|:-----------|:--------|:--------|:---------|:------|:-------|:-------|
-|const      | 6.6265  | 0.006   | 1061.073 | 0.000 | 6.614  | 6.639  |
-|clustering | 0.3165  | 0.012   | 25.377   | 0.000 | 0.292  | 0.341  |
-|closeness  | -1.2648 | 0.012   | -101.425 | 0.000 | -1.289 | -1.240 |
+
+Adj. R2: 0.993
+
+|            |   Coef |   p-valor |   Std. error |
+|:-----------|-------:|----------:|-------------:|
+| const      |  6.626 |         0 |        0.006 |
+| clustering |  0.316 |         0 |        0.012 |
+| closeness  | -1.265 |         0 |        0.012 |
 
 #### Inicialização Direta
-|           | coef    | std err | $t$      | $P>|t|$ | $[0.025$ | $0.975]$ |
-|:----------------|:--------|:--------|:---------|:------|:-------|:-------|
-| const           | 6.7928  | 0.010   | 687.142  | 0.000 | 6.773  | 6.812  |
-| closeness       | -2.2713 | 0.013   | -175.561 | 0.000 | -2.297 | -2.246 |
-| shannon_entropy | 0.1455  | 0.013   | 11.250   | 0.000 | 0.120  | 0.171  |
+
+Adj. R2: 0.991
+
+|                 |   Coef |   p-valor |   Std. error |
+|:----------------|-------:|----------:|-------------:|
+| const           |  6.793 |         0 |        0.01  |
+| closeness       | -2.271 |         0 |        0.013 |
+| shannon_entropy |  0.146 |         0 |        0.013 |
 
 #### Inicialização Inversa
-|           | coef    | std err | $t$      | $P>|t|$ | $[0.025$ | $0.975]$ |
-|:-----------|:--------|:--------|:---------|:------|:-------|:-------|
-| const      | 6.6062  | 0.005   | 1359.076 | 0.000 | 6.597  | 6.616  |
-| clustering | 1.2084  | 0.010   | 124.495  | 0.000 | 1.189  | 1.227  |
-| closeness  | -0.8346 | 0.010   | -85.988  | 0.000 | -0.854 | -0.816 |
+
+Adj. R2: 0.997
+
+|            |   Coef |   p-valor |   Std. error |
+|:-----------|-------:|----------:|-------------:|
+| const      |  6.606 |         0 |        0.005 |
+| clustering |  1.208 |         0 |        0.01  |
+| closeness  | -0.835 |         0 |        0.01  |
 
 
 
