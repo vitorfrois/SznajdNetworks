@@ -4,6 +4,7 @@ author:
 - Vítor Amorim Fróis
 abstract: |
   O presente trabalho utiliza Aprendizado de Máquina para prever variáveis complexas no modelo de Sznajd em Redes Complexas: o Tempo de Consenso e a Frequência de Troca de Opinião. Ao utilizar medidas topológicas para caracterização de redes e consequentemente como features, podemos prever as variáveis com alta acurácia. Ao explorar a convergência entre estrutura e dinâmica de redes, esse projeto responde dúvidas relacionadas aos mecanismos de polarização em interações sociais.
+bibliography: [references.bib]
 ---
 
 
@@ -174,37 +175,43 @@ $$
 
 A imagem da função exponencial é $(0,\infty)$, garantindo que o valor estimado $Y_i$ sempre será positivo.
 
+### Normalização dos Dados
+Para análise de regressão, é essencial que os dados estejam normalizados, a fim de impedir o cálculo de coeficientes imprecisos e ajudar a determinar quais variáveis possuem maior importância. Para tanto, basta subtrair os valores pela média e dividir pelo desvio padrão do conjunto de treino.
+
+$$
+X_{\text{std}}=\dfrac{X-\mu}{\sigma}
+$$
+
 ### Random Forests
 Modelos de aprendizado de máquina robustos para dados tabulares envolvem o *ensemble* de árvores de decisão, em que a resposta final é uma média de cada uma das árvores. Dentre esses modelos, as *Random Forests* se popularizaram ao propor uma construção de árvores através de *bootstrap aggregation* ou *bagging*. Em cada passo, uma árvore é treinada a partir de um conjunto obtido a partir de amostragem com reposição do conjunto de treinamento. Após um grande número de árvores ser gerado, uma nova amostra é predita a partir das médias dos valores de todas outras árvores. 
 
 # Resultados
 
-
 ## Predição de Variáveis Dinâmicas
-Para os resultados abaixo, considere um modelo de regressão logarítmica com todas as *features*, que seleciona $n=2$ *features* utilizando FS em um ambiente de Validação Cruzada. 
-Inicialmente almejamos alcançar um alto coeficiente de determinação nas previsões. A seguir, vemos que o objetivo é alcançado para ambas variáveis.
 
-### Frequência de Troca de Opinião
-|         |   r2_train |   r2_test | selected_features                                                 |
-|:--------|-----------:|----------:|:------------------------------------------------------------------|
-| random  |   0.990428 |  0.990366 | ['clustering', 'approximate_current_flow_betweenness_centrality'] |
-| direct  |   0.997254 |  0.995369 | ['clustering', 'eigenvector']                                     |
-| inverse |   0.994792 |  0.994392 | ['clustering', 'information_centrality']                          |
+A figura 5 apresenta um boxplot com os modelos Random Forest e Regressão não Linear para predição de variáveis dinâmicas. É possível observar que ambos modelos aprendem os dados do conjunto de treinamento, mas o modelo de Regressão não Linear alcança uma generalização levemente melhor. Notavelmente, o segundo modelo possui treinamento mais simples e apresenta maior explicabilidade. Dessa forma, em conjunto com o Forward Selection, se caracteriza como um método para análise topológica da rede, aprofundado na seção x.
 
-### Tempo de Consenso
-|         |   r2_train |   r2_test | selected_features                       |
-|:--------|-----------:|----------:|:----------------------------------------|
-| random  |   0.994099 |  0.990117 | ['closeness', 'information_centrality'] |
-| direct  |   0.99064  |  0.989489 | ['closeness', 'shannon_entropy']        |
-| inverse |   0.992382 |  0.991563 | ['closeness', 'betweenness']            |
+![Cada coluna representa a distribuição dos valores ajustados de um modelo e conjunto (treino ou teste) para predição das variáveis dinâmicas. É possível observar que ambos modelos aprendem os dados do conjunto de treinamento, mas o modelo de Regressão não Linear alcança uma generalização levemente melhor.](compare.png)
 
-## Análise de Regressão
-Com os resultados de alta predição em mãos, é possível se aprofundar nos resultados para maior interpretabilidade das variáveis resposta através dos coeficientes de regressão, p-valores e outras informações. Aqui, realizamos uma seleção empírica das variáveis das seção 2.3 prezando pela diversidade e explicabilidade. Assim, os próximos resultados advém do mesmo cenário da subseção anterior considerando apenas as variáveis descritas na seçao 2.3: Entropia de Shannon, Assortatividade, *Closeness Centrality* e Coeficiente de *Clustering*.
+### Importância de Features em Random Forests
+Análise das features mais importantes foi feita para ambas variáveis resposta e diferentes métodos de inicialização, demarcados de acordo com as cores. As features estão ordenadas de forma descendente no gráfico por importância média. É importante notar a diluição da importância das features no Tempo de Consenso, em que há uma grande distinção entre importância para cada inicialização diferente. Já na Frequência de Troca de Opinião, a Variância do Grau e Entropia são dominantes para todas inicializações. De forma contrária, *Eigenvector* e Assortatividade não demonstram nenhuma capacidade preditiva. Em todos os casos, não fica claro quais métricas são determinantes para predição das variáveis resposta. A análise foi realizada utilizando Random Forests.
 
-### Frequência de Troca de Opinião
-#### Inicialização Aleatória
+![Importância de Features para o Tempo de Consenso: há uma diluição de importância.](consensus_importance.png)
 
-Adj. R2: 0.988
+![Importância de Features para a Frequência de Troca de Opinião: a Variância do Grau e Entropia são dominantes.](frequency_importance.png)
+
+
+### Análise das Features utilizando Regressão não Linear e Forward Selection
+Os métodos de Regressão com mínimos quadrados nos permitem aprofundar nos resultados para maior interpretabilidade das variáveis resposta através dos coeficientes de regressão, p-valores e outras informações. Aqui, realizamos uma seleção empírica das variáveis das seção 2.3 prezando pela diversidade e explicabilidade. Assim, os próximos resultados advém do mesmo cenário da subseção anterior considerando apenas as variáveis descritas na seçao 2.3: Entropia de Shannon, Assortatividade, *Closeness Centrality* e Coeficiente de *Clustering*.
+
+Através das tabelas obtidas para cada uma das variáveis resposta e cada um dos métodos de inicialização percebemos através dos baixos valores de *p-value* e *standard error* que há uma grande significância das *features* selecionadas. Além disso, com apenas duas features é ppossível alcançar um coeficiente de determinação superior a $0.98$. No caso da Frequência de Troca de Opinião, o *Clustering* se apresenta para as três inicializações em uma relação direta: quanto maior o coeficiente, maior a frequência de troca de opinão. É uma medida que aumenta de acordo com o número de triângulos do total presentes na rede. Dessa forma, é possível elaborar uma tese que a presença de triângulos na rede incita a troca de opiniões entre os indivíduos. Para o Tempo de Consenso, pode se observar o *Closeness Centrality* em uma relação inversa com a variável resposta. A *feature* em questão aumenta a medida que a distância média entre os pares de nós na rede diminui. No nosso caso, isso pode indicar que quando, em média, os nós da rede estão mais próximos uns aos outros, menor o tempo necessário para alcançar um estado estacionário.
+
+![Coeficientes de Regressão obtidos para para Inferência do Tempo de Consenso de acordo com diferentes inicializações](consensus_heatmap.png)
+
+![Coeficientes de Regressão obtidos para para Inferência da Frequência de Troca de Opinião de acordo com diferentes inicializações](frequency_heatmap.png)
+
+
+<!-- **Inicialização Aleatória:** Adj. R2: 0.988
 
 |            |   Coef |   p-valor |   Std. error |
 |:-----------|-------:|----------:|-------------:|
@@ -212,9 +219,7 @@ Adj. R2: 0.988
 | clustering |  0.73  |         0 |        0.009 |
 | closeness  | -0.111 |         0 |        0.009 |
 
-#### Inicialização Direta
-
-Adj. R2: 0.993
+**Inicialização Direta:** Adj. R2: 0.993
 
 |            |   Coef |   p-valor |   Std. error |
 |:-----------|-------:|----------:|-------------:|
@@ -222,9 +227,7 @@ Adj. R2: 0.993
 | clustering |  1.265 |         0 |        0.011 |
 | closeness  | -0.121 |         0 |        0.011 |
 
-#### Inicialização Inversa
-
-Adj. R2: 0.993
+**Inicialização Inversa:** Adj. R2: 0.993
 
 |            |   Coef |   p-valor |   Std. error |
 |:-----------|-------:|----------:|-------------:|
@@ -233,11 +236,8 @@ Adj. R2: 0.993
 | closeness  |  0.082 |         0 |        0.009 |
 
 
-### Tempo de Consenso
 
-#### Inicialização Aleatória
-
-Adj. R2: 0.993
+**Inicialização Aleatória:** Adj. R2: 0.993
 
 |            |   Coef |   p-valor |   Std. error |
 |:-----------|-------:|----------:|-------------:|
@@ -245,9 +245,7 @@ Adj. R2: 0.993
 | clustering |  0.316 |         0 |        0.012 |
 | closeness  | -1.265 |         0 |        0.012 |
 
-#### Inicialização Direta
-
-Adj. R2: 0.991
+**Inicialização Direta:** Adj. R2: 0.991
 
 |                 |   Coef |   p-valor |   Std. error |
 |:----------------|-------:|----------:|-------------:|
@@ -255,22 +253,21 @@ Adj. R2: 0.991
 | closeness       | -2.271 |         0 |        0.013 |
 | shannon_entropy |  0.146 |         0 |        0.013 |
 
-#### Inicialização Inversa
-
-Adj. R2: 0.997
+**Inicialização Inversa:** Adj. R2: 0.997
 
 |            |   Coef |   p-valor |   Std. error |
 |:-----------|-------:|----------:|-------------:|
 | const      |  6.606 |         0 |        0.005 |
 | clustering |  1.208 |         0 |        0.01  |
 | closeness  | -0.835 |         0 |        0.01  |
-
-
-
-### 
+ -->
 
 # Conclusão
-- pq as medidas mais importantes sao importantes
-- quais as diferencas entre as inicializacoes diferentes
-- regressao poisson vs xgboost e redes neurais
-- Comparacao q-voter
+Nesse trabalho, conseguimos predizer variáveis dinâmicas associadas com o modelo de Sznajd utilizando métricas de topologia de rede. Verificamos que a predição obteve grande acurácia e propusemos um método para obter maior explicabilidade e semelhante acurácia quando comparado a Random Forests. Assim, conseguimos verificar não apenas quais *features* são mais importantes na emergência de polarização, mas também qual o nível de influência. Principalmente, mostramos que o Coeficiente de *Clustering* e *Closeness Centrality* podem ser utilizado para predizer as variáveis dinâmicas associadas as simulações. Além disso, três mudanças nos métodos de inicialização dos nós foram considerados, buscando entender como as medidas topológicas podem ser influenciadas nesse caso. Inicialmente, os nós foram escolhidos de forma aleatória, seguindo o modelo original de Sznajd. Após, nós com maior grau foram selecionados para investigar como seu grande número de conexões pode influenciar a dinâmica da rede. Por fim, os nós na periferia da rede foram selecionados para entender o impacto de agentes menos influentes. Apesar dessas modificações impactarem o resultado das simulações, conseguimos observar que o impacto é pequeno e as métricas selecionadas se conservam ao longo dos experimentos. 
+
+Ao analisar a importância de features obtida a partir de experimento com alta acurácia a partir de Random Forests, foi encontrada uma diluição de importância, isto é, duas features tem comportamento semelhate e impactam a regressão de maneira semelhante \ref{figura x}, o que torna a análise dos dados mais difícil. Tal observação se confirma ao analisar o Heatmap na \ref{figura x}. Assim, o método proposto busca encontrar um subconjunto de *features* que obtenha alta acurácia através de Regressão não Linear, possibilitando análise dos coeficientes. Nesse cenário, os coeficientes de Regressão indicam que a presença de triângulos na rede incita a troca de opiniões entre os indivíduos e que, em média, quão menor a distância entre os nós da rede, menor o tempo necessário para alcançar um estado estacionário. Notavelmente, a magnitude de influência de *Closeness Centrality* na predição do Tempo de Consenso aumenta de acordo com o grau dos nós que recebem a opinião predominante, mostrando que a proximidade entre nós é especialmente influente quando os nós dominantes são mais conectados.
+
+A expansão da metodologia proposta para predição e análise de variáveis topológicas além do modelo de Sznajd pode promover novos *insights* relativos a diversos cenários e estudos em dinâmicas sociais. Trabalhos futuros nessa direção vão contribuir para um melhor entendimento de dinâmicas complexas para a polarização e suas implicações. A combinação de aprendizado de máquina com redes complexas tem um grande potencial para revolucionar nossa compreensão de sistemas sociais, levando a um maior entendimento do comportamento e desenvolvimento de estratégias para alcançar resultado social positivo.
+
+::: {#refs}
+:::
